@@ -6,7 +6,7 @@ HOST ?= 127.0.0.1
 PORT ?= 8000
 
 .DEFAULT_GOAL := help
-.PHONY: help setup run test lint fmt migrate validate-config check eval eval-core seed tunnel clean
+.PHONY: help setup hooks run test lint fmt migrate validate-config secrets check eval eval-core seed tunnel clean
 
 help: ## Show this help
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -19,7 +19,11 @@ setup: $(BIN)/python ## Create venv, install deps, copy .env, migrate the local 
 	$(BIN)/pip install -e ".[dev]"
 	@test -f .env || (cp .env.example .env && echo "Created .env from .env.example")
 	@mkdir -p var
+	$(MAKE) hooks
 	$(MAKE) migrate
+
+hooks: ## Install the git pre-commit hook (secret scan)
+	git config core.hooksPath .githooks
 
 run: ## Run the API with auto-reload
 	$(BIN)/uvicorn receptionist.main:create_app --factory --reload --host $(HOST) --port $(PORT)
@@ -28,12 +32,12 @@ test: ## Run the test suite
 	$(BIN)/pytest
 
 lint: ## Lint and check formatting
-	$(BIN)/ruff check src tests migrations
-	$(BIN)/ruff format --check src tests migrations
+	$(BIN)/ruff check src tests migrations scripts evals
+	$(BIN)/ruff format --check src tests migrations scripts evals
 
 fmt: ## Auto-fix lint issues and format
-	$(BIN)/ruff check --fix src tests migrations
-	$(BIN)/ruff format src tests migrations
+	$(BIN)/ruff check --fix src tests migrations scripts evals
+	$(BIN)/ruff format src tests migrations scripts evals
 
 migrate: ## Apply database migrations
 	$(BIN)/alembic upgrade head
@@ -41,7 +45,10 @@ migrate: ## Apply database migrations
 validate-config: ## Validate every tenant config (same check as startup)
 	$(BIN)/python -m receptionist.config.validate
 
-check: lint test validate-config ## Everything CI runs
+secrets: ## Scan every tracked file for API-key patterns
+	$(BIN)/python scripts/check_secrets.py --all
+
+check: secrets lint test validate-config ## Everything CI runs
 
 eval-core: ## Minimal eval, 10 core personas (Phase 2)
 	@echo "eval-core arrives in Phase 2." && exit 2

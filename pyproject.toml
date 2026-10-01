@@ -52,5 +52,6 @@ select = ["E", "F", "W", "I", "B", "UP", "DTZ", "S", "SIM", "RUF"]
 ignore = ["S101"]  # asserts are fine in tests and invariants
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S105", "S106", "DTZ001"]
+"tests/**" = ["S105", "S106", "S603", "S607", "DTZ001"]
+"scripts/**" = ["S603", "S607", "T201"]
 "migrations/**" = ["E501"]
