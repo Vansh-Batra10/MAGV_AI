@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "client_id": "jolly-brothers-round-rock",
+  "business": {
+    "name": "Jolly Brothers Services",
+    "trade": "HVAC",
+    "city": "Round Rock",
+    "state": "TX"
+  },
+  "owners": [{"name": "Joe"}, {"name": "Billy"}],
+  "notifications": {"owner_email_env": "DEMO_OWNER_EMAIL"},
+  "timezone": "America/Chicago",
+  "business_hours": {
+    "mon": ["08:00-17:00"],
+    "tue": ["08:00-17:00"],
+    "wed": ["08:00-17:00"],
+    "thu": ["08:00-17:00"],
+    "fri": ["08:00-17:00"],
+    "sat": [],
+    "sun": []
+  },
+  "agent_mode": "after_hours_and_overflow",
+  "services": [
+    {"id": "ac-repair", "name": "AC repair and diagnostics"},
+    {"id": "heating-repair", "name": "Heating / furnace repair"},
+    {"id": "maintenance", "name": "HVAC maintenance and tune-ups"},
+    {"id": "replacement-estimate", "name": "System replacement estimates"},
+    {"id": "drain-line", "name": "Drain line clogs"},
+    {"id": "thermostat", "name": "Thermostat issues"}
+  ],
+  "service_area": {
+    "cities": ["Round Rock"],
+    "zip_codes": ["78664", "78665", "78681"]
+  },
+  "pricing_policy": {
+    "mode": "no_quotes",
+    "instruction": "Never quote prices. Say a technician will diagnose and give an upfront quote before any work.",
+    "deflection_line": "I can't give prices over the phone, but a technician will diagnose it and give you an upfront quote before any work starts."
+  },
+  "emergency_rules": [
+    {
+      "id": "gas-smell",
+      "label": "Gas smell",
+      "urgency": "emergency",
+      "match": {"any": ["gas smell", "smell gas", "smells like gas", "smelling gas", "rotten egg", "gas leak", "leaking gas", "olor a gas", "huele a gas"]},
+      "safety_script": {
+        "en": "Your safety comes first. Please leave the house right now, and once you're outside, call the gas company or 911.",
+        "es": "Su seguridad es lo primero. Por favor salga de la casa ahora mismo y, ya afuera, llame a la compañía de gas o al 911."
+      },
+      "alert_on_call": true
+    },
+    {
+      "id": "burning-smoke",
+      "label": "Burning smell or smoke from unit",
+      "urgency": "emergency",
+      "match": {"any": ["burning smell", "smells like burning", "smell burning", "smoke coming", "smoking unit", "unit is smoking", "smoke from", "sparks", "electrical smell", "olor a quemado", "sale humo"]},
+      "alert_on_call": true
+    },
+    {
+      "id": "no-ac-vulnerable-heat",
+      "label": "No AC with vulnerable person during extreme heat",
+      "urgency": "emergency",
+      "match": {
+        "all_of": [
+          ["no ac", "ac is out", "ac stopped", "ac quit", "ac died", "ac broke", "ac not working", "ac isn't working", "ac is not working", "not cooling", "blowing hot", "blowing warm", "air conditioner"],
+          ["elderly", "grandma", "grandmother", "grandpa", "grandfather", "my mom is", "my dad is", "baby", "infant", "newborn", "pregnant", "oxygen", "medical", "disabled", "heart condition", "dialysis"],
+          ["extreme heat", "so hot", "really hot", "very hot", "too hot", "heat wave", "100 degrees", "over 100", "triple digits", "90 degrees", "sweltering", "overheating", "heat stroke", "heat exhaustion"]
+        ]
+      },
+      "alert_on_call": true
+    },
+    {
+      "id": "no-ac-vulnerable",
+      "label": "No AC with vulnerable person (heat not stated)",
+      "urgency": "urgent",
+      "match": {
+        "all_of": [
+          ["no ac", "ac is out", "ac stopped", "ac quit", "ac died", "ac broke", "ac not working", "ac isn't working", "ac is not working", "not cooling", "blowing hot", "blowing warm", "air conditioner"],
+          ["elderly", "grandma", "grandmother", "grandpa", "grandfather", "my mom is", "my dad is", "baby", "infant", "newborn", "pregnant", "oxygen", "medical", "disabled", "heart condition", "dialysis"]
+        ]
+      },
+      "alert_on_call": false
+    },
+    {
+      "id": "no-heat-freezing",
+      "label": "No heat below freezing",
+      "urgency": "emergency",
+      "match": {
+        "all_of": [
+          ["no heat", "heat is out", "heater not working", "heater isn't working", "heater stopped", "furnace not working", "furnace stopped", "furnace is out", "not heating", "blowing cold"],
+          ["freezing", "below freezing", "below 32", "pipes", "ice storm", "snow", "frozen", "teens", "20 degrees", "single digits"]
+        ]
+      },
+      "alert_on_call": true
+    }
+  ],
+  "on_call": {
+    "name": "On-call technician (demo)",
+    "phone_e164": "+15125550142",
+    "email_env": "DEMO_ONCALL_EMAIL",
+    "is_dummy": true
+  },
+  "booking": {
+    "provider": "fake",
+    "calendar_owner": "demo_owner",
+    "api_key_env": "CALCOM_DEMO_API_KEY",
+    "event_type_id_env": "CALCOM_DEMO_EVENT_TYPE_ID",
+    "slot_length_min": 120,
+    "earliest_slot": "next_business_day_open",
+    "lead_time_min": 0,
+    "max_days_ahead": 14,
+    "offer_count": 2,
+    "attendee_email": {
+      "placeholder_local_part": "jb-demo",
+      "placeholder_domain_env": "CALCOM_PLACEHOLDER_EMAIL_DOMAIN"
+    }
+  },
+  "transfer": {"enabled": false, "demo_simulate": true},
+  "voice": {"retell_agent_id_env": "RETELL_AGENT_ID_JOLLY", "ws_token_env": "RETELL_WS_TOKEN_JOLLY"},
+  "language_support": {"en": "full", "es": "callback_only"},
+  "brand_voice": {
+    "description": "Warm, friendly, honest, family-business feel. No upselling. Short sentences.",
+    "sample_phrases": [
+      "Oh no, let's get that taken care of.",
+      "We'll get somebody out to you.",
+      "Joe and Billy will take good care of you."
+    ]
+  },
+  "faqs": [
+    {
+      "q": "Are you open on weekends?",
+      "a": "Our office is closed weekends, but I can take your details and get you booked for the first available slot, and flag urgent issues to the team."
+    },
+    {
+      "q": "Do you replace systems?",
+      "a": "Yes, we can schedule an estimate. The team prefers to repair when it makes sense, and will walk you through options honestly."
+    }
+  ],
+  "forbidden_topics": [
+    "quoting prices",
+    "promising same-day service on weekends",
+    "diagnosing the exact fault over the phone",
+    "speaking negatively about competitors"
+  ],
+  "disclosure": {
+    "en": "Hi, thanks for calling Jolly Brothers Services. I'm their AI assistant, and this call may be recorded.",
+    "es": "Hola, gracias por llamar a Jolly Brothers Services. Soy su asistente de inteligencia artificial y esta llamada puede ser grabada."
+  },
+  "metrics": {"avg_job_value_usd": 450},
+  "demo": {
+    "enabled": true,
+    "built_for": "Jolly Brothers Services",
+    "banner": "Spec demo built for Jolly Brothers Services. Bookings go to a demo calendar."
+  },
+  "todos": [
+    "service_area: confirm surrounding cities from the Jolly Brothers website",
+    "service_area: confirm Round Rock ZIPs 78664, 78665, 78681",
+    "metrics: confirm average job value (placeholder 450 USD)",
+    "disclosure.es and Spanish safety script: native-speaker review"
+  ]
+}
