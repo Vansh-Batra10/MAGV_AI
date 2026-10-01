@@ -94,9 +94,55 @@ class Service(_Strict):
     bookable: bool = True
 
 
+ZipCode = Annotated[str, Field(pattern=r"^\d{5}$")]
+
+
+class AreaList(_Strict):
+    cities: list[str] = []
+    zip_codes: list[ZipCode] = []
+
+
 class ServiceArea(_Strict):
+    """Coverage tiers (DESIGN.md section 3.7).
+
+    cities/zip_codes: confirmed coverage, normal booking flow.
+    unverified_candidates: informational only; behave like any unlisted area (soft callback).
+    excluded_areas: polite decline.
+    """
+
     cities: list[str] = Field(min_length=1)
-    zip_codes: list[Annotated[str, Field(pattern=r"^\d{5}$")]] = []
+    zip_codes: list[ZipCode] = []
+    unverified_candidates: AreaList = AreaList()
+    excluded_areas: AreaList = AreaList()
+
+
+_MMDD_RE = re.compile(r"^(\d{2})-(\d{2})$")
+SeasonName = Literal["hot_season", "cold_season"]
+
+
+class SeasonRange(_Strict):
+    """Tenant-local inclusive date range, "MM-DD" to "MM-DD"; may wrap the year end."""
+
+    start: str
+    end: str
+
+    @field_validator("start", "end")
+    @classmethod
+    def _mmdd(cls, v: str) -> str:
+        m = _MMDD_RE.match(v)
+        if not m:
+            raise ValueError(f"{v!r} is not 'MM-DD'")
+        try:
+            date(2024, int(m.group(1)), int(m.group(2)))  # leap year accepts 02-29
+        except ValueError as exc:
+            raise ValueError(f"{v!r} is not a calendar date") from exc
+        return v
+
+    def contains(self, day: date) -> bool:
+        key = day.strftime("%m-%d")
+        if self.start <= self.end:
+            return self.start <= key <= self.end
+        return key >= self.start or key <= self.end
 
 
 class QuotableAmount(_Strict):
@@ -120,26 +166,50 @@ class PricingPolicy(_Strict):
         return self
 
 
+Urgency = Literal["routine", "urgent", "emergency"]
+
+
 class EmergencyMatch(_Strict):
+    """Patterns are phrases (word-boundary match) or "re:<regex>"."""
+
     any: list[str] = []
     all_of: list[list[str]] = []
 
     @model_validator(mode="after")
-    def _not_empty(self) -> EmergencyMatch:
+    def _valid(self) -> EmergencyMatch:
         if not self.any and not self.all_of:
-            raise ValueError("an emergency rule needs 'any' or 'all_of' phrases")
+            raise ValueError("a rule needs 'any' or 'all_of' patterns")
         if any(len(group) == 0 for group in self.all_of):
             raise ValueError("all_of groups must not be empty")
+        for pattern in [*self.any, *(p for g in self.all_of for p in g)]:
+            if pattern.startswith("re:"):
+                try:
+                    re.compile(pattern[3:])
+                except re.error as exc:
+                    raise ValueError(f"invalid regex {pattern!r}: {exc}") from exc
         return self
+
+
+class SeasonalUrgency(_Strict):
+    season: SeasonName
+    in_season: Urgency
+    out_of_season: Urgency
 
 
 class EmergencyRule(_Strict):
     id: Slug
     label: str
-    urgency: Literal["emergency", "urgent"]
+    urgency: Urgency | None = None
+    urgency_by_season: SeasonalUrgency | None = None
     match: EmergencyMatch
     safety_script: LocalizedText | None = None
-    alert_on_call: bool = False
+    alert_on_call: bool = False  # fires only when the final urgency is emergency
+
+    @model_validator(mode="after")
+    def _one_urgency(self) -> EmergencyRule:
+        if (self.urgency is None) == (self.urgency_by_season is None):
+            raise ValueError("set exactly one of 'urgency' or 'urgency_by_season'")
+        return self
 
 
 class OnCall(_Strict):
@@ -162,8 +232,8 @@ class OnCall(_Strict):
 
 
 class AttendeeEmailPolicy(_Strict):
-    placeholder_local_part: Annotated[str, Field(pattern=r"^[a-z0-9][a-z0-9._-]*$")]
-    placeholder_domain_env: EnvVarName
+    # Names the env var holding e.g. "myname+jb-{session_short}@gmail.com" (DESIGN.md 11.2).
+    placeholder_template_env: EnvVarName = "PLACEHOLDER_EMAIL_TEMPLATE"
 
 
 class BookingSettings(_Strict):
@@ -233,6 +303,7 @@ class TenantConfig(_Strict):
     services: list[Service] = Field(min_length=1)
     service_area: ServiceArea
     pricing_policy: PricingPolicy
+    seasons: dict[SeasonName, SeasonRange] = {}
     emergency_rules: list[EmergencyRule] = []
     on_call: OnCall
     booking: BookingSettings
@@ -263,6 +334,12 @@ class TenantConfig(_Strict):
                 "booking.calendar_owner='tenant' is not allowed while demo.enabled: "
                 "demo bookings must go to the demo owner's calendar"
             )
+        for rule in self.emergency_rules:
+            if rule.urgency_by_season and rule.urgency_by_season.season not in self.seasons:
+                raise ValueError(
+                    f"emergency rule {rule.id!r} uses season "
+                    f"{rule.urgency_by_season.season!r}, which is not defined in 'seasons'"
+                )
         ids = [r.id for r in self.emergency_rules]
         if len(ids) != len(set(ids)):
             raise ValueError("emergency_rules ids must be unique")

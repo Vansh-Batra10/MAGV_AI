@@ -19,6 +19,8 @@ dependencies = [
     "structlog>=24.1",
     "jinja2>=3.1",
     "phonenumbers>=8.13",
+    "anthropic>=1.0",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
@@ -31,6 +33,9 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+receptionist = ["engine/prompts/*.j2", "web/templates/*.html", "web/static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -49,7 +54,12 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "DTZ", "S", "SIM", "RUF"]
-ignore = ["S101"]  # asserts are fine in tests and invariants
+ignore = [
+    "S101",    # asserts are fine in tests and invariants
+    "RUF001",  # typographic quotes/dashes are intentional in spoken text and reports
+    "SIM108",  # ternaries are not always clearer
+    "SIM905",  # space-separated word lists read better than long literals
+]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S105", "S106", "S603", "S607", "DTZ001"]

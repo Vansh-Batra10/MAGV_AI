@@ -1,14 +1,21 @@
 # AI Receptionist for Home Services: Design (Phase 0)
 
-Status: **Approved with changes** (rev 2, 2026-10-01). First tenant: Jolly Brothers Services (Round Rock, TX, HVAC).
+Status: **Approved with changes** (rev 3, 2026-10-01). First tenant: Jolly Brothers Services (Round Rock, TX, HVAC).
 
 This is a **spec demo built for Jolly Brothers**. It is not their production system. Every booking goes to the demo owner's own Cal.com account and event type, and every email goes to demo inboxes.
+
+### Revision 3 changelog (Phase 2 review)
+1. **Two-tier service-area coverage** (section 3.7). Explicitly listed areas get the normal booking flow. Anything not listed and not in `excluded_areas` gets a soft path: capture details, tell the caller the team will confirm coverage, outcome `callback` with reason `coverage_unconfirmed`. Only `excluded_areas` get a polite decline. The Round Rock ZIPs and the nearby cities (Georgetown, Hutto, Pflugerville, Cedar Park, Leander, Austin) are **unverified candidates** in the soft tier.
+2. **Season-aware urgency rules** (section 3.8). Vulnerable person + no cooling → emergency during the tenant's `hot_season` (Jolly Brothers: May 1–Oct 31), urgent otherwise. No cooling without a vulnerable person → urgent in hot season, routine otherwise. The caller never has to say "heat".
+3. **Placeholder email** comes from a template (`PLACEHOLDER_EMAIL_TEMPLATE=myname+jb-{session_short}@gmail.com`) instead of a catch-all domain. The Phase 3 smoke script confirms Cal.com accepts plus-addressed emails.
+4. **The revenue card** is labelled as an estimate and shows the average-job-value assumption (section 15).
+5. **Secret scanning**: a pre-commit hook and a CI job reject key-shaped strings (`sk-ant-`, `cal_`, `key_`) and committed `.env` files (section 9).
 
 ### Revision 2 changelog (owner review)
 1. Bookings go to the **demo owner's Cal.com account and event type**, not Jolly Brothers'. See A1, A8 and section 6.
 2. A **demo clock override** (`DEMO_NOW`), tenant-timezone aware. It is used everywhere "now" matters and cannot be enabled outside demo mode. See section 5.5.
 3. A **templated filler line** is streamed before any tool that calls an external API. Time-to-first-audible is measured separately from time-to-final-answer. See sections 7.4 and 8.
-4. The Cal.com **attendee email** behavior is verified in the Phase 3 smoke script, with a configurable placeholder address on a domain the demo owner controls. See section 11.2.
+4. The Cal.com **attendee email** behavior is verified in the Phase 3 smoke script, with a configurable placeholder address (rev 3: a plus-address template, not a catch-all domain). See section 11.2.
 5. **Full Spanish is deferred to milestone 2.** Milestone 1 detects Spanish, plays a templated Spanish callback message, captures a callback, and logs `language=es`. The i18n seams stay in place. See section 3.6.
 6. **Phase order** is now 1 → 2 (with a minimal 10-persona eval) → 3 → 5 → 6 → 4 → 7. See section 16.
 7. **Models:** summaries use `claude-sonnet-5-5`. The judge stays on `claude-opus-5-5` with a `--judge-model` flag, and eval run cost is logged.
@@ -293,7 +300,8 @@ phase:            GREETING | TRIAGE | SAFETY | COLLECT | OFFER | CONFIRM_SLOT | 
                   | BOOKED | CALLBACK | INFO | LANGUAGE_CALLBACK | WRAP_UP | ENDED
 language:         en | es   (M1: es only routes to LANGUAGE_CALLBACK; section 3.6)
 urgency:          null | routine | urgent | emergency   (+ matched_rule_ids, source: rule|llm)
-flags:            disclosure_given, safety_script_given, out_of_area, spam_suspected,
+coverage:         unknown | covered | unconfirmed | excluded   (section 3.7)
+flags:            disclosure_given, safety_script_given, spam_suspected,
                   human_requested, price_only, on_call_alerted
 caller:           name, phone_e164, phone_confirmed, address{line, city, zip}, address_confirmed,
                   email, email_confirmed, issue_summary
@@ -316,7 +324,8 @@ stateDiagram-v2
   INFO --> TRIAGE: caller wants service
   INFO --> WRAP_UP: caller satisfied
   COLLECT --> OFFER: name + phone_confirmed + address_confirmed + issue_summary
-  COLLECT --> CALLBACK: out_of_area | human_requested | caller declines booking
+  COLLECT --> CALLBACK: coverage unconfirmed | human_requested | caller declines booking
+  COLLECT --> WRAP_UP: coverage excluded (polite decline)
   OFFER --> CONFIRM_SLOT: caller picks one of offered slots
   OFFER --> CALLBACK: no slots | provider unavailable
   CONFIRM_SLOT --> BOOKING: slot_confirmed_by_caller
@@ -340,7 +349,7 @@ stateDiagram-v2
 |---|---|---|---|
 | `classify_urgency` | TRIAGE, COLLECT | none | Sets urgency. **Rule floor:** the result can never be lower than the highest config rule matched by the deterministic keyword/regex matcher on the caller's text. Emergency + safety rule → SAFETY, and the engine injects the safety script verbatim. |
 | `record_caller_details` | any but ENDED | E.164 normalization must succeed for phone; `confirmed=true` only accepted if the **previous agent utterance** contained the read-back (phone: last 4 digits present; address: street number present) | Updates caller fields. Changing a value clears its confirmation. |
-| `check_availability` | COLLECT (after required fields), OFFER, BOOKING (race) | required COLLECT fields complete; not out_of_area | Queries provider within the lead time / max days ahead. Returns **at most 2** slots with pre-rendered `spoken` strings. Stored in `offered_slots`. |
+| `check_availability` | COLLECT (after required fields), OFFER, BOOKING (race) | required COLLECT fields complete; `coverage == covered` | Queries provider within the lead time / max days ahead. Returns **at most 2** slots with pre-rendered `spoken` strings. Stored in `offered_slots`. |
 | `create_booking` | CONFIRM_SLOT | slot_id ∈ offered_slots; slot_confirmed_by_caller; all required fields confirmed; no other active booking | Section 2.5. |
 | `cancel_booking` | BOOKED, WRAP_UP | booking belongs to this conversation (tenant-scoped) | Cancels with the provider. Status → cancelled. |
 | `capture_lead` | any | name or phone present | Upserts lead row (for info-only/price-only callers). |
@@ -370,6 +379,27 @@ Guards are a safety net. The eval harness counts guard triggers, and a non-zero 
 - **i18n seams for milestone 2:** every caller-facing template lives under `locales/{en,es}.yaml`. `speech.py` renders per locale (`render_slot(slot, locale)`, `read_back_phone(e164, locale)`). Prompts take `language` from state. Turning on the full flow means adding `es` prompt layers and setting `language_support.es = "full"` in tenant config. No engine changes.
 
 ---
+
+### 3.7 Service-area coverage (rev 3)
+`coverage.py` classifies the confirmed service address deterministically. City names and ZIPs are normalized (case, punctuation, "Round Rock, TX 78664" parsing). Rules are checked in this order:
+
+| Tier | Match | Behavior | Outcome |
+|---|---|---|---|
+| `excluded` | city or ZIP in `excluded_areas` | Polite decline ("we don't service that area"), offer nothing further, `capture_lead` only if the caller asks | `info_only` (reason `out_of_area`) |
+| `covered` | city or ZIP in `service_area.cities` / `zip_codes` | Normal flow: availability → booking | as normal |
+| `unconfirmed` | anything else, including `unverified_candidates` | Soft path: capture name, phone (read back), address (read back) and issue, then say "I'll have the team confirm we cover your area and call you back first thing." Then `request_callback(reason="coverage_unconfirmed")`. **No availability check, no booking.** | `callback` (reason `coverage_unconfirmed`) |
+
+- `excluded` beats `covered` if both match. A city with a ZIP outside the listed ZIPs is still `covered` by city.
+- The classification is recorded in state, shown in the debug panel and audited on the `record_caller_details` tool call. `check_availability` and `create_booking` preconditions require `coverage == covered`.
+- An emergency in an unconfirmed area still gets the safety script and the on-call alert. Coverage never delays safety.
+- `unverified_candidates` change no behavior. They document what the owner should confirm, they are listed in the owner email ("caller is in Hutto, a candidate area"), and they make it easy to promote an area to `covered`.
+
+### 3.8 Urgency rules and seasons (rev 3)
+- The deterministic matcher runs over the **caller's accumulated text** in the conversation, so "the AC is dead" in turn 1 plus "my mom is home, she's 82" in turn 2 combine. Text is normalized: lowercase, curly quotes, and "A/C", "a.c.", "air conditioner/conditioning" all become `ac`.
+- A pattern is a phrase (word-boundary match) or `re:<regex>`. Regexes cover things phrase lists can't, such as ages ("she's 82", "82 years old" → age ≥ 65) and infant ages ("6 months old").
+- `urgency_by_season` picks the level from the tenant-local date (from the injected clock, so `DEMO_NOW` applies). Seasons are `MM-DD` ranges and may wrap the year.
+- Jolly Brothers rules: `no-cooling-vulnerable` = [no cooling] × [elderly or age ≥ 65, infant or baby, pregnant, medical condition, disability] → **emergency** in `hot_season` (May 1–Oct 31), **urgent** otherwise. `no-cooling` = [no cooling] → **urgent** in `hot_season`, **routine** otherwise. Mentioning heat is never required.
+- The result is the max over matched rules (routine < urgent < emergency) and a floor for the LLM's `classify_urgency`. `alert_on_call` fires only when the final level is emergency.
 
 ## 4. Data model
 
@@ -484,17 +514,21 @@ TenantConfig (schema_version: 1)
   business_hours: {mon..sun: ["HH:MM-HH:MM", ...]}   # [] = closed; holidays: [date]
   agent_mode: after_hours | overflow | after_hours_and_overflow | always
   services: [{id, name, bookable}]
-  service_area: {cities: [..], zip_codes: [..]}       # explicit lists; no geocoding in M1
+  service_area: {cities, zip_codes,                  # confirmed tier → normal booking
+                 unverified_candidates: {cities, zip_codes},   # informational; soft tier
+                 excluded_areas: {cities, zip_codes}}          # polite decline
+  seasons: {hot_season?: {start: "MM-DD", end: "MM-DD"}, cold_season?: {...}}   # tenant-local dates; may wrap the year
   pricing_policy: {mode: no_quotes | fixed_fees, instruction, deflection_line,
                    quotable_amounts: [{label, amount_usd, spoken}]}   # must be [] when no_quotes
-  emergency_rules: [{id, label, urgency: emergency | urgent,
-                     match: {any: [phrase], all_of: [[phrase], [phrase], ...]},
+  emergency_rules: [{id, label, urgency: emergency | urgent | routine,
+                     urgency_by_season?: {season: hot_season, in_season, out_of_season},
+                     match: {any: [pattern], all_of: [[pattern], ...]},   # phrase, or "re:<regex>"
                      safety_script?: {en, es}, alert_on_call: bool}]
   on_call: {name, phone_e164, email_env, is_dummy: bool}
   booking: {provider: fake | calcom, calendar_owner: demo_owner | tenant,
             api_key_env?, event_type_id_env?, slot_length_min, earliest_slot: next_business_day_open,
             lead_time_min, max_days_ahead, offer_count (1..2),
-            attendee_email: {placeholder_local_part, placeholder_domain_env}}
+            attendee_email: {placeholder_template_env}}   # env value e.g. myname+jb-{session_short}@gmail.com
   transfer: {enabled: bool, demo_simulate: bool}
   voice: {retell_agent_id_env?, ws_token_env?}
   language_support: {en: full, es: callback_only | full}
@@ -518,9 +552,9 @@ The file is `tenants/jolly-brothers-round-rock.json`. Your text is kept verbatim
 | `business_hours.mon_fri "08:00-17:00"`, sat/sun closed | `business_hours.mon..fri: ["08:00-17:00"]`, `sat: []`, `sun: []` | expanded per day |
 | `agent_mode: after_hours_and_overflow` | same value | Added to the enum. Overflow means "the office forwarded a call it couldn't answer." The agent behaves the same, but the greeting context differs. |
 | `services` (6 strings) | `services[{id, name, bookable:true}]` | "System replacement estimates" is bookable as an estimate visit |
-| `service_area: ["Round Rock", TODO]` | `cities: ["Round Rock"]`, `zip_codes: ["78664","78665","78681"]` | The ZIPs are the Round Rock residential ZIPs as I know them. **Please confirm.** Surrounding cities stay in `todos`. The website is unreachable from my environment. |
+| `service_area: ["Round Rock", TODO]` | `cities: ["Round Rock"]` (confirmed tier); `unverified_candidates`: ZIPs 78664/78665/78681 and Georgetown, Hutto, Pflugerville, Cedar Park, Leander, Austin; `excluded_areas: []` | Rev 3: unverified candidates and unknown areas take the soft `coverage_unconfirmed` callback path (section 3.7). Promote a candidate to `cities`/`zip_codes` once confirmed. |
 | `pricing_policy` (sentence) | `mode: no_quotes`, `instruction` = your sentence, `deflection_line` = "A technician will diagnose it and give you an upfront quote before any work starts." | |
-| `emergency_rules.emergency` (4 items) | 4 rules: `gas_smell` (safety script from your action text + alert), `burning_smoke` (alert), `no_ac_vulnerable_heat` (`all_of` [no-AC phrases] × [vulnerable-person phrases] × [heat phrases] → emergency; without the heat group → **urgent** floor, and the LLM may raise it), `no_heat_freezing` (`all_of` [no-heat] × [freezing phrases] → emergency) | Only the gas rule has a safety script, because only gas has one in your action text. I did not invent safety advice for the other rules. |
+| `emergency_rules.emergency` (4 items) | Rev 3 rules: `gas-smell` (safety script + alert), `burning-smoke` (alert), `no-cooling-vulnerable` (vulnerable person + no cooling → emergency in `hot_season`, else urgent; alert when emergency), `no-cooling` (urgent in `hot_season`, else routine), `no-heat-freezing` (emergency + alert) | Only the gas rule has a safety script, because only gas has one in your action text. `hot_season` is May 1–Oct 31 (section 3.8). |
 | `on_call_contact: TODO dummy` | `on_call: {name:"On-call tech (demo)", phone_e164:"+15125550142", email_env:"DEMO_ONCALL_EMAIL", is_dummy:true}` | 555-01xx numbers are reserved as fictional |
 | `booking.provider: calcom_mock` | `provider: fake` until Phase 3, then `calcom` with `calendar_owner: demo_owner`, `CALCOM_DEMO_API_KEY`, `CALCOM_DEMO_EVENT_TYPE_ID` | Change 1 |
 | `slot_length_minutes: 120`, `earliest_slot: next business day 08:00` | `slot_length_min: 120`, `earliest_slot: next_business_day_open`, `lead_time_min: 0`, `max_days_ahead: 14` | "Next business day open" is computed from the tenant hours with the injected clock. Cal.com availability is still the authority. |
@@ -616,7 +650,7 @@ How barge-in and partial transcripts are handled:
 **Security and privacy.**
 - Retell webhooks: HMAC-SHA256 verification over the **raw request body**, with a 5-minute timestamp window, compared in constant time. Replays are deduplicated by `webhook_events` uniqueness.
 - Retell websocket: the URL contains a per-tenant secret path segment (`ws_token`, from env), and `call_details.call.agent_id` must equal the tenant's configured `retell_agent_id`. Otherwise the socket closes with code 1008.
-- Secrets come only from env (`pydantic-settings`), and `.env.example` documents every variable.
+- Secrets come only from env (`pydantic-settings`), and `.env.example` documents every variable. `.env` is gitignored. `scripts/check_secrets.py` runs as a **pre-commit hook** (`make hooks`, installed by `make setup`) and in **CI**. It fails on key-shaped strings (`sk-ant-…`, `cal_…`, `key_…`) and on any committed `.env*` other than `.env.example`.
 - PII-safe logs: a structlog processor redacts known keys (`phone`, `email`, `address`, `name`, `attendee`) and regex-scrubs phone numbers and emails in free text. Phones are logged as `***0198` plus a salted hash for correlation. Transcripts never go to logs.
 - Dashboard: HTTP basic auth over credentials from env (`DASHBOARD_USERS` = `user:bcrypt_hash:tenant_slug|*`), so each owner only sees their own tenant. Responses get `Cache-Control: no-store`.
 - Text channel: per-IP and per-session rate limits (in-memory token bucket in M1). `client_id` must exist. Session IDs are server-issued UUIDs.
@@ -652,7 +686,7 @@ How barge-in and partial transcripts are handled:
 | Invalid tenant config | startup validation | Process refuses to start. The error lists JSON paths. |
 | `DEMO_NOW` set outside demo mode | Settings validator | The process refuses to start with an explicit error (section 5.5). |
 | Spanish false positive / negative | Detector score logged per utterance | False positive: the caller hears the Spanish callback message, which includes "if you prefer English, just say so" ("si prefiere inglés, dígalo"); an English reply returns them to the English flow. False negative: the LLM may set `language=es` via `record_caller_details`. Both are covered by eval personas. |
-| Cal.com requires attendee email, caller gave none | Smoke-script finding + 400 on create | We send the configured placeholder (`jb-demo+<ref>@<your domain>`); section 11.2. |
+| Cal.com requires attendee email, caller gave none | Smoke-script finding + 400 on create | We send the placeholder rendered from `PLACEHOLDER_EMAIL_TEMPLATE` (e.g. `myname+jb-c7f3a1@gmail.com`); section 11.2. |
 | Clock / DST edge | — | All storage in UTC. Rendering via `zoneinfo`. Slot queries use UTC bounds computed from local business days. Tests cover both 2026–27 transitions. |
 
 ---
@@ -694,14 +728,14 @@ Source: `calcom/cal.com` repository, `docs/api-reference/v2/openapi.json` (main 
 **Attendee email (change 4).** The spec marks `attendee.email` as *optional* (`CreateBookingAttendee` requires only `name` and `timeZone`). But an event type's booking fields can make email required, and Cal.com may email the attendee and the organizer on create and cancel. The Phase 3 smoke script (`scripts/calcom_smoke.py`) checks this against **your** demo event type and records the results to `var/calcom_smoke.json` and to this section:
 1. `GET /v2/event-types/{id}` → reads the booking-field definitions and reports whether `email` is required and whether `attendeePhoneNumber` exists, plus the configured locations.
 2. A test booking **without** email at a far-future slot → records success, or the exact 4xx error body.
-3. A test booking **with** a placeholder email → recorded. Then you check two inboxes (the organizer's, and the placeholder domain's catch-all) and answer two prompts in the script: "Did the attendee or organizer get an email?"
+3. A test booking **with** a plus-addressed placeholder email (rendered from `PLACEHOLDER_EMAIL_TEMPLATE`) → records whether Cal.com **accepts the `+` address** (some validators reject it) and stores it unchanged. Then you check two inboxes (the organizer's, and the placeholder's base mailbox) and answer two prompts in the script: "Did the attendee or organizer get an email?"
 4. Cancels every test booking and records the cancel response and any cancel emails.
 
 Runtime behavior, chosen from the findings:
 - Caller gave an email (confirmed by read-back) → it is sent as `attendee.email`. Cal.com may then email the caller directly, which is acceptable for the demo, and our own SMTP confirmation is still sent.
 - No email, and Cal.com accepts none → no email is sent.
-- No email, and Cal.com requires one → we send a **placeholder** built from `booking.attendee_email.placeholder_local_part` + a domain you control from env (`CALCOM_PLACEHOLDER_EMAIL_DOMAIN`), e.g. `jb-demo+c7f3a1@yourdomain.com` with the conversation short id as the plus-tag. Cal.com's attendee emails then land in your catch-all, never in a stranger's inbox. The placeholder is never shown to the caller or used for our customer confirmation, and the booking row records `attendee_email_is_placeholder=true`. The dashboard shows "no email collected".
-- The startup check refuses a placeholder domain that is a public mailbox provider (gmail.com and similar). This stops someone else's inbox from receiving bookings.
+- No email, and Cal.com requires one → we send a **placeholder** rendered from the env var named by `booking.attendee_email.placeholder_template_env` (default `PLACEHOLDER_EMAIL_TEMPLATE`), e.g. `myname+jb-{session_short}@gmail.com` → `myname+jb-c7f3a1@gmail.com`. `{session_short}` is the first 6 hex chars of the conversation id and is the only allowed field. The rendered value must be a syntactically valid address. Any Cal.com attendee email therefore lands in your own mailbox, tagged per session, never in a stranger's. The placeholder is never shown to the caller or used for our customer confirmation, and the booking row records `attendee_email_is_placeholder=true`. The dashboard shows "no email collected".
+- If Cal.com rejects plus-addresses (smoke-script finding), the fallback is a template without `+` on a domain you control. That is a config change, not a code change.
 
 ### 11.3 Email: SMTP
 Python stdlib `smtplib` / `email.message.EmailMessage` (RFC 5321/5322), STARTTLS (587) or SMTPS (465). For Gmail, use an app password with 2FA enabled. Docs: https://docs.python.org/3.12/library/smtplib.html.
@@ -819,7 +853,7 @@ Messages API via the `anthropic` Python SDK 1.x (latest on PyPI at writing: 1.11
 ## 15. Dashboard (owner view)
 
 - **Calls list**: date and time (tenant timezone), caller name and masked phone, channel, duration, urgency badge, outcome badge, booking time. Filters: outcome, urgency, date range (HTMX partial reload). Paginated.
-- **Metrics card** (date-range aware): calls handled, after-hours calls (computed from tenant hours at `started_at`), bookings made, emergencies flagged, estimated revenue captured (= bookings × `avg_job_value_usd`, labelled as an estimate).
+- **Metrics card** (date-range aware): calls handled, after-hours calls (computed from tenant hours at `started_at`), bookings made, emergencies flagged, **Estimated revenue captured**, labelled "Estimate" on the card, with the assumption printed beneath it: "bookings × $450 average job value (assumed)". That is `bookings × metrics.avg_job_value_usd`, and the label stays even after the value is confirmed.
 - **Call detail**: summary card (issue, urgency, outcome, follow-ups), booking panel (status, local time, provider uid, link to Cal.com), recording player, chat-bubble transcript with interrupted markers, and a tool-call timeline (name, status, latency, redacted args). Collapsible per-turn latency and cost panel. Email status.
 - **Demo helpers** (when `demo.enabled`): a "Call the agent" button (Retell web call via `POST /v3/create-web-call`) and a link to the web chat.
 
@@ -832,7 +866,7 @@ Messages API via the `anthropic` Python SDK 1.x (latest on PyPI at writing: 1.11
 | Order | Phase | Scope | Acceptance criteria |
 |---|---|---|---|
 | 1st | **1. Skeleton** | Repo layout, pyproject, Makefile, `.env.example`; settings (with the `APP_ENV` / `DEMO_NOW` guard); `SystemClock` / `DemoClock`; business-hours helpers; structlog with PII redaction; tenant config models, loader and both tenant files; SQLAlchemy models, Alembic initial migration, tenant-scoped session; `/healthz` (DB + config + clock); pytest running. | `make setup && make test` green; `make run` → `GET /healthz` 200 with tenants, todos and clock source; invalid config fails startup with a clear path; `DEMO_NOW` outside demo mode refuses to boot; migration applies on SQLite; isolation test passes; redaction test passes; DST and business-hours tests pass. |
-| 2nd | **2. Engine + text channel + minimal eval** | State machine, gateway, guards, urgency matcher, Spanish detector + templated callback, fillers, speech (en + es digits), all tools on fake adapters, Anthropic + Scripted LLM, `POST /v1/chat/{client_id}`, web chat page, turn metrics (first-audible vs final-answer), cost. **Minimal eval runner** with 10 core personas: weekend AC failure, gas smell, price shopper, wrong phone then corrects, no slots available, booking API failure, wants a human, out-of-area, asks if it's a robot, Spanish speaker. Deterministic checks, markdown report, run cost. | E2E test (ScriptedLLM) books with the fake provider. With a real Anthropic key you can complete a booking conversation in the web chat; the gas-smell script is spoken verbatim; Spanish routes to callback with `language=es`; fillers precede external tools; double-booking test passes; `make eval-core` produces a report with pass rate and cost. |
+| 2nd | **2. Engine + text channel + minimal eval** | State machine, gateway, guards, urgency matcher, Spanish detector + templated callback, fillers, speech (en + es digits), all tools on fake adapters, Anthropic + Scripted LLM, `POST /v1/chat/{client_id}`, web chat page, turn metrics (first-audible vs final-answer), cost. **Minimal eval runner** with 10 core personas: weekend AC failure, gas smell, price shopper, wrong phone then corrects, no slots available, booking API failure, wants a human, out-of-area, asks if it's a robot, Spanish speaker. Deterministic checks, markdown report, run cost. | E2E test (ScriptedLLM) books with the fake provider, including **"Saturday 2 PM, AC dead" with `DEMO_NOW=2026-10-03T14:10`**. With a real Anthropic key you can complete a booking conversation in the web chat. The gas-smell script is spoken verbatim. Spanish routes to callback with `language=es`. Fillers precede external tools. The double-booking test passes. **The web chat shows the tool-call timeline, state-machine state and per-turn metrics beside the conversation.** `make eval-core` produces a report with pass rate, cost and **the full transcript of every failing case**. |
 | 3rd | **3. Cal.com adapter** | `calcom_smoke.py` (verifies key, event type, slots, **attendee-email requirement and Cal.com email behavior**, records fixtures); `CalComProvider`; re-check, idempotency, reconciliation, breaker; contract tests; cancel; placeholder email. | A text conversation produces a **real booking on your demo Cal.com calendar**, with the correct local time. Repeating the confirm does not double-book. A simulated slot race offers new options. The email findings are written into section 11.2. |
 | 4th | **5. Retell voice** | Retell WS adapter (config, begin message, response_id handling, cancellation, reconciliation, ping_pong, reminders, fillers, tool_call events, end_call), webhook endpoint with signature verification and dedupe, agent setup guide, tunnel target. | You web-call the agent through the tunnel and complete a **real booking by voice**. Barge-in works. Webhooks verify. A replayed webhook is a no-op. `first_audible_ms` and `answer_*_ms` are logged per turn. |
 | 5th | **6. Post-call + dashboard** | Job worker, finalize/summarize (`claude-sonnet-5-5`)/email handlers, SMTP + console providers, dashboard (list, filters, detail, metrics, recording, demo-clock banner), demo call button. | After a call, the dashboard shows transcript, recording, summary and booking. The owner email arrives at the demo inbox over SMTP. Customer confirmation arrives when an email was given. Re-delivered webhooks don't re-send email. |
@@ -842,8 +876,8 @@ Messages API via the `anthropic` Python SDK 1.x (latest on PyPI at writing: 1.11
 ---
 
 ## 17. Open questions (non-blocking; needed by the noted phase)
-1. ~~Jolly Brothers config~~ Received. Still open in it: surrounding service-area cities, confirmation of the Round Rock ZIPs (78664, 78665, 78681), and the average job value (placeholder $450). These are tracked in the config's `todos`.
+1. ~~Jolly Brothers config~~ Received. Still open in it: which unverified candidate areas are actually covered (Round Rock ZIPs, Georgetown, Hutto, Pflugerville, Cedar Park, Leander, Austin), any areas to exclude, and the average job value (placeholder $450). These are tracked in the config's `todos`.
 2. Your **demo Cal.com** event type ID and API key (Phase 3). Ideally the event type has a 120-minute length, Mon–Fri 8 AM–5 PM Central availability, and an "attendee address" location.
-3. **A domain you control** for placeholder attendee emails, with a catch-all inbox (Phase 3).
+3. `PLACEHOLDER_EMAIL_TEMPLATE` value (e.g. `myname+jb-{session_short}@gmail.com`) for placeholder attendee emails (Phase 3).
 4. **SMTP account** to send from, plus the demo owner and demo customer inboxes for the recording (Phase 6).
 5. A Retell account and API key. Should we also buy a Retell phone number, or is a web call enough for the video? (Phase 5)

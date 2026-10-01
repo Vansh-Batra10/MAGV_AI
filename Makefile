@@ -50,8 +50,8 @@ secrets: ## Scan every tracked file for API-key patterns
 
 check: secrets lint test validate-config ## Everything CI runs
 
-eval-core: ## Minimal eval, 10 core personas (Phase 2)
-	@echo "eval-core arrives in Phase 2." && exit 2
+eval-core: ## Minimal eval: 10 core personas vs the agent (needs ANTHROPIC_API_KEY)
+	$(BIN)/python -m evals.runner --personas core --parallel 4 --threshold 0.8
 
 eval: ## Full eval harness (Phase 4)
 	@echo "eval arrives in Phase 4." && exit 2

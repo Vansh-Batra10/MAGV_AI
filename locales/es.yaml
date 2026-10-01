@@ -1,0 +1,8 @@
+# Spanish templates. Milestone 1: callback-only flow (DESIGN.md 3.6). Needs native review.
+capture:
+  intro: "Gracias por llamar a {business}. Por ahora este asistente solo atiende en inglés, pero alguien del equipo le devolverá la llamada en español lo antes posible. Si prefiere inglés, dígalo."
+  confirm_caller_id: "¿Le llamamos al número que termina en {last4}?"
+  ask_number: "¿A qué número le podemos llamar?"
+  confirm_number: "Tengo el {digits}. ¿Es correcto?"
+  retry_number: "Disculpe, no entendí el número. ¿Me lo puede repetir?"
+  done: "Perfecto. El equipo le llamará pronto. ¡Gracias!"

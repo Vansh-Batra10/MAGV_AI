@@ -59,6 +59,8 @@ class Settings(BaseSettings):
     model_prices: dict[str, ModelPrice] = Field(default_factory=lambda: dict(DEFAULT_MODEL_PRICES))
 
     anthropic_api_key: SecretStr | None = None
+    llm_live_timeout_s: float = 8.0
+    max_tool_rounds: int = 3
 
     @property
     def is_sqlite(self) -> bool:

@@ -7,34 +7,81 @@
     "city": "Denver",
     "state": "CO"
   },
-  "owners": [{"name": "Dana"}],
-  "notifications": {"owner_email_env": "DEMO_OWNER_EMAIL"},
+  "owners": [
+    {
+      "name": "Dana"
+    }
+  ],
+  "notifications": {
+    "owner_email_env": "DEMO_OWNER_EMAIL"
+  },
   "timezone": "America/Denver",
   "business_hours": {
-    "mon": ["07:30-18:00"],
-    "tue": ["07:30-18:00"],
-    "wed": ["07:30-18:00"],
-    "thu": ["07:30-18:00"],
-    "fri": ["07:30-18:00"],
-    "sat": ["09:00-13:00"],
+    "mon": [
+      "07:30-18:00"
+    ],
+    "tue": [
+      "07:30-18:00"
+    ],
+    "wed": [
+      "07:30-18:00"
+    ],
+    "thu": [
+      "07:30-18:00"
+    ],
+    "fri": [
+      "07:30-18:00"
+    ],
+    "sat": [
+      "09:00-13:00"
+    ],
     "sun": []
   },
   "agent_mode": "always",
   "services": [
-    {"id": "furnace-repair", "name": "Furnace repair"},
-    {"id": "ac-repair", "name": "AC repair"},
-    {"id": "maintenance", "name": "Seasonal maintenance"}
+    {
+      "id": "furnace-repair",
+      "name": "Furnace repair"
+    },
+    {
+      "id": "ac-repair",
+      "name": "AC repair"
+    },
+    {
+      "id": "maintenance",
+      "name": "Seasonal maintenance"
+    }
   ],
   "service_area": {
-    "cities": ["Denver", "Lakewood", "Aurora"],
-    "zip_codes": []
+    "cities": [
+      "Denver",
+      "Lakewood",
+      "Aurora"
+    ],
+    "zip_codes": [],
+    "excluded_areas": {
+      "cities": [
+        "Boulder"
+      ],
+      "zip_codes": []
+    },
+    "unverified_candidates": {
+      "cities": [
+        "Golden"
+      ],
+      "zip_codes": []
+    }
   },
   "pricing_policy": {
     "mode": "fixed_fees",
     "instruction": "Only quote the diagnostic fee. Everything else is quoted on site.",
     "deflection_line": "Beyond the diagnostic fee, the technician quotes on site before starting any work.",
     "quotable_amounts": [
-      {"label": "diagnostic fee", "amount_usd": 89, "spoken": "eighty-nine dollars"}
+      {
+        "label": "diagnostic fee",
+        "amount_usd": 89,
+        "spoken": "eighty-nine dollars"
+      }
     ]
   },
   "emergency_rules": [
@@ -42,8 +89,18 @@
       "id": "gas-smell",
       "label": "Gas smell",
       "urgency": "emergency",
-      "match": {"any": ["gas smell", "smell gas", "smells like gas", "rotten egg", "gas leak"]},
-      "safety_script": {"en": "Please leave the building now and call the gas utility or 911 once you're outside."},
+      "match": {
+        "any": [
+          "gas smell",
+          "smell gas",
+          "smells like gas",
+          "rotten egg",
+          "gas leak"
+        ]
+      },
+      "safety_script": {
+        "en": "Please leave the building now and call the gas utility or 911 once you're outside."
+      },
       "alert_on_call": true
     }
   ],
@@ -62,23 +119,36 @@
     "max_days_ahead": 10,
     "offer_count": 2,
     "attendee_email": {
-      "placeholder_local_part": "cr-demo",
-      "placeholder_domain_env": "CALCOM_PLACEHOLDER_EMAIL_DOMAIN"
+      "placeholder_template_env": "PLACEHOLDER_EMAIL_TEMPLATE"
     }
   },
-  "language_support": {"en": "full", "es": "none"},
+  "language_support": {
+    "en": "full",
+    "es": "none"
+  },
   "brand_voice": {
     "description": "Calm, efficient, professional. Plain language.",
-    "sample_phrases": ["I can help with that.", "Let's get you scheduled."]
+    "sample_phrases": [
+      "I can help with that.",
+      "Let's get you scheduled."
+    ]
   },
   "faqs": [
-    {"q": "Do you charge for a diagnostic?", "a": "Yes, the diagnostic fee is eighty-nine dollars."}
+    {
+      "q": "Do you charge for a diagnostic?",
+      "a": "Yes, the diagnostic fee is eighty-nine dollars."
+    }
   ],
-  "forbidden_topics": ["quoting repair prices", "speaking negatively about competitors"],
+  "forbidden_topics": [
+    "quoting repair prices",
+    "speaking negatively about competitors"
+  ],
   "disclosure": {
     "en": "Thanks for calling Cedar Ridge Heating and Air. I'm an AI assistant, and this call may be recorded."
   },
-  "metrics": {"avg_job_value_usd": 380},
+  "metrics": {
+    "avg_job_value_usd": 380
+  },
   "demo": {
     "enabled": true,
     "built_for": "Fictional tenant for isolation testing",

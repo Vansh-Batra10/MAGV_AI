@@ -11,13 +11,19 @@ from fastapi import FastAPI, Request, Response
 from sqlalchemy import inspect
 
 from receptionist import __version__
+from receptionist.adapters.llm.anthropic import AnthropicProvider
+from receptionist.adapters.llm.base import LLMProvider
 from receptionist.api import health
+from receptionist.booking.registry import BookingProviders
+from receptionist.channels import text as text_channel
 from receptionist.clock import Clock, DemoClock, build_clock
 from receptionist.config import TenantRegistry, load_tenants
 from receptionist.db import Database
 from receptionist.db.tenant_sync import sync_tenants
+from receptionist.engine.engine import Engine
 from receptionist.logging import configure_logging, get_logger
 from receptionist.settings import Settings, get_settings
+from receptionist.web import routes as web_routes
 
 log = get_logger(__name__)
 
@@ -44,7 +50,27 @@ async def _require_schema(db: Database) -> None:
         raise StartupError("Database schema missing. Run `make migrate` first.")
 
 
-def create_app(settings: Settings | None = None) -> FastAPI:
+def _default_llm(settings: Settings) -> LLMProvider | None:
+    if settings.anthropic_api_key is None or not settings.anthropic_api_key.get_secret_value():
+        log.warning("llm_not_configured", hint="Set ANTHROPIC_API_KEY to enable the agent.")
+        return None
+    return AnthropicProvider(
+        api_key=settings.anthropic_api_key.get_secret_value(),
+        models={
+            "live_turn": settings.model_live,
+            "summary": settings.model_summary,
+            "judge": settings.model_judge,
+            "caller_sim": settings.model_caller_sim,
+        },
+    )
+
+
+def create_app(
+    settings: Settings | None = None,
+    *,
+    llm: LLMProvider | None = None,
+    bookings: BookingProviders | None = None,
+) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(
         level=settings.log_level,
@@ -61,6 +87,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         await _require_schema(db)
         await sync_tenants(db, tenants)
         app.state.db = db
+        app.state.engine = Engine(
+            settings=settings,
+            tenants=tenants,
+            clock=clock,
+            db=db,
+            llm=llm if llm is not None else _default_llm(settings),
+            bookings=bookings or BookingProviders(tenants),
+        )
         for client_id, todos in tenants.all_todos().items():
             log.warning("tenant_config_todos", tenant_id=client_id, todos=todos)
         log.info(
@@ -90,5 +124,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         response.headers["x-request-id"] = request_id
         return response
 
+    app.state.rate_limiter = text_channel.RateLimiter(per_minute=60)
     app.include_router(health.router)
+    app.include_router(text_channel.router)
+    app.include_router(web_routes.router)
     return app

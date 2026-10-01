@@ -7,10 +7,9 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from alembic import command
-from alembic.config import Config
 
 from receptionist.config.loader import LoadedTenant, load_tenant_file
+from receptionist.db.migrate import upgrade
 from receptionist.settings import Settings
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,10 +58,7 @@ def write_tenant(tmp_path: Path) -> Callable[[dict[str, Any], str | None], Path]
 
 
 def migrate(url: str, revision: str = "head") -> None:
-    cfg = Config(str(ROOT / "alembic.ini"))
-    cfg.attributes["database_url"] = url
-    cfg.attributes["configure_logger"] = False
-    command.upgrade(cfg, revision)
+    upgrade(url, revision)
 
 
 @pytest.fixture

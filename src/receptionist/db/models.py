@@ -81,12 +81,14 @@ class Message(TenantOwned, Base):
     id: Mapped[str] = uuid_pk()
     conversation_id: Mapped[str] = mapped_column(ForeignKey("conversations.id"))
     seq: Mapped[int] = mapped_column(Integer)
-    role: Mapped[str] = mapped_column(String(16))  # user | agent | tool | system
+    role: Mapped[str] = mapped_column(String(16))  # user | agent | tool_use | tool_result
     content: Mapped[str] = mapped_column(Text, default="")
     tool_name: Mapped[str | None] = mapped_column(String(64))
     tool_call_id: Mapped[str | None] = mapped_column(String(64))
     interrupted: Mapped[bool] = mapped_column(Boolean, default=False)
     turn_id: Mapped[str | None] = mapped_column(String(36))
+    # e.g. {"source": "llm" | "filler" | "system", "llm_note": "..."}; see engine/history.py
+    meta: Mapped[JsonDict | None] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=real_utc_now)
 
 

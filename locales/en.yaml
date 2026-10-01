@@ -1,0 +1,37 @@
+# Caller-facing templates (English). Keep lines short: they are spoken aloud.
+fillers:
+  check_availability:
+    - "Let me check the schedule for you."
+    - "One sec, I'm pulling up the calendar."
+    - "Let me see what we've got open."
+  create_booking:
+    - "Perfect, let me get that on the schedule."
+    - "Great, booking that now, one moment."
+    - "Okay, putting that in for you now."
+  cancel_booking:
+    - "Okay, let me cancel that for you."
+  second: "One more moment."
+
+lines:
+  greeting_prompt: "What can I help you with today?"
+  llm_retry: "Sorry, I missed that. Could you say it again?"
+  llm_fallback_callback: "I'm having a little trouble on my end. Let me take your name and number so the team can call you right back."
+  booked_claim_blocked: "Let me finish getting that on the schedule."
+  hold_too_long: "Sorry, this is taking longer than it should. I'll make sure the team calls you back first thing."
+  booking_confirmed: "You're all set for {when}. A technician will come to {address}. We'll call {phone_last4_words} if anything changes."
+  slot_taken: "Oh, that time just got taken. I can do {offers}. Which works better?"
+  no_slots_callback: "I don't see an opening I can book right now, so I'll have the team call you back first thing to get you scheduled."
+  provider_down_callback: "I can't reach our scheduling system right now, so I won't guess at a time. The team will call you back first thing to get you on the calendar."
+  coverage_unconfirmed: "I'll have the team confirm we cover your area and call you back first thing."
+  coverage_excluded: "I'm sorry, we don't service that area, so I can't book a visit there."
+  transfer_simulated: "I can't transfer the call right now, but I've flagged this for the team and someone will call you back as soon as possible."
+  goodbye: "Thanks for calling. Have a good one!"
+
+# Deterministic callback capture when the LLM keeps failing (DESIGN.md 10).
+capture:
+  intro: "I'm having a little trouble on my end, so let me make sure the team can call you right back."
+  confirm_caller_id: "Is the number ending in {last4} the best one to reach you?"
+  ask_number: "What's the best number to reach you?"
+  confirm_number: "I have {digits}. Is that right?"
+  retry_number: "Sorry, I didn't catch that. What's the best number?"
+  done: "Thanks. The team will call you back as soon as possible. Goodbye!"

@@ -7,42 +7,118 @@
     "city": "Round Rock",
     "state": "TX"
   },
-  "owners": [{"name": "Joe"}, {"name": "Billy"}],
-  "notifications": {"owner_email_env": "DEMO_OWNER_EMAIL"},
+  "owners": [
+    {
+      "name": "Joe"
+    },
+    {
+      "name": "Billy"
+    }
+  ],
+  "notifications": {
+    "owner_email_env": "DEMO_OWNER_EMAIL"
+  },
   "timezone": "America/Chicago",
   "business_hours": {
-    "mon": ["08:00-17:00"],
-    "tue": ["08:00-17:00"],
-    "wed": ["08:00-17:00"],
-    "thu": ["08:00-17:00"],
-    "fri": ["08:00-17:00"],
+    "mon": [
+      "08:00-17:00"
+    ],
+    "tue": [
+      "08:00-17:00"
+    ],
+    "wed": [
+      "08:00-17:00"
+    ],
+    "thu": [
+      "08:00-17:00"
+    ],
+    "fri": [
+      "08:00-17:00"
+    ],
     "sat": [],
     "sun": []
   },
   "agent_mode": "after_hours_and_overflow",
   "services": [
-    {"id": "ac-repair", "name": "AC repair and diagnostics"},
-    {"id": "heating-repair", "name": "Heating / furnace repair"},
-    {"id": "maintenance", "name": "HVAC maintenance and tune-ups"},
-    {"id": "replacement-estimate", "name": "System replacement estimates"},
-    {"id": "drain-line", "name": "Drain line clogs"},
-    {"id": "thermostat", "name": "Thermostat issues"}
+    {
+      "id": "ac-repair",
+      "name": "AC repair and diagnostics"
+    },
+    {
+      "id": "heating-repair",
+      "name": "Heating / furnace repair"
+    },
+    {
+      "id": "maintenance",
+      "name": "HVAC maintenance and tune-ups"
+    },
+    {
+      "id": "replacement-estimate",
+      "name": "System replacement estimates"
+    },
+    {
+      "id": "drain-line",
+      "name": "Drain line clogs"
+    },
+    {
+      "id": "thermostat",
+      "name": "Thermostat issues"
+    }
   ],
   "service_area": {
-    "cities": ["Round Rock"],
-    "zip_codes": ["78664", "78665", "78681"]
+    "cities": [
+      "Round Rock"
+    ],
+    "zip_codes": [],
+    "unverified_candidates": {
+      "cities": [
+        "Georgetown",
+        "Hutto",
+        "Pflugerville",
+        "Cedar Park",
+        "Leander",
+        "Austin"
+      ],
+      "zip_codes": [
+        "78664",
+        "78665",
+        "78681"
+      ]
+    },
+    "excluded_areas": {
+      "cities": [],
+      "zip_codes": []
+    }
   },
   "pricing_policy": {
     "mode": "no_quotes",
     "instruction": "Never quote prices. Say a technician will diagnose and give an upfront quote before any work.",
     "deflection_line": "I can't give prices over the phone, but a technician will diagnose it and give you an upfront quote before any work starts."
   },
+  "seasons": {
+    "hot_season": {
+      "start": "05-01",
+      "end": "10-31"
+    }
+  },
   "emergency_rules": [
     {
       "id": "gas-smell",
       "label": "Gas smell",
       "urgency": "emergency",
-      "match": {"any": ["gas smell", "smell gas", "smells like gas", "smelling gas", "rotten egg", "gas leak", "leaking gas", "olor a gas", "huele a gas"]},
+      "match": {
+        "any": [
+          "gas smell",
+          "smell gas",
+          "smells like gas",
+          "smelling gas",
+          "rotten egg",
+          "gas leak",
+          "leaking gas",
+          "olor a gas",
+          "huele a gas"
+        ]
+      },
       "safety_script": {
         "en": "Your safety comes first. Please leave the house right now, and once you're outside, call the gas company or 911.",
         "es": "Su seguridad es lo primero. Por favor salga de la casa ahora mismo y, ya afuera, llame a la compañía de gas o al 911."
@@ -53,30 +129,94 @@
       "id": "burning-smoke",
       "label": "Burning smell or smoke from unit",
       "urgency": "emergency",
-      "match": {"any": ["burning smell", "smells like burning", "smell burning", "smoke coming", "smoking unit", "unit is smoking", "smoke from", "sparks", "electrical smell", "olor a quemado", "sale humo"]},
-      "alert_on_call": true
-    },
-    {
-      "id": "no-ac-vulnerable-heat",
-      "label": "No AC with vulnerable person during extreme heat",
-      "urgency": "emergency",
       "match": {
-        "all_of": [
-          ["no ac", "ac is out", "ac stopped", "ac quit", "ac died", "ac broke", "ac not working", "ac isn't working", "ac is not working", "not cooling", "blowing hot", "blowing warm", "air conditioner"],
-          ["elderly", "grandma", "grandmother", "grandpa", "grandfather", "my mom is", "my dad is", "baby", "infant", "newborn", "pregnant", "oxygen", "medical", "disabled", "heart condition", "dialysis"],
-          ["extreme heat", "so hot", "really hot", "very hot", "too hot", "heat wave", "100 degrees", "over 100", "triple digits", "90 degrees", "sweltering", "overheating", "heat stroke", "heat exhaustion"]
+        "any": [
+          "burning smell",
+          "smells like burning",
+          "smell burning",
+          "smoke coming",
+          "smoking unit",
+          "unit is smoking",
+          "smoke from",
+          "sparks",
+          "electrical smell",
+          "olor a quemado",
+          "sale humo"
         ]
       },
       "alert_on_call": true
     },
     {
-      "id": "no-ac-vulnerable",
-      "label": "No AC with vulnerable person (heat not stated)",
-      "urgency": "urgent",
+      "id": "no-cooling-vulnerable",
+      "label": "No cooling with a vulnerable person (elderly, infant, medical condition, disability)",
+      "urgency_by_season": {
+        "season": "hot_season",
+        "in_season": "emergency",
+        "out_of_season": "urgent"
+      },
       "match": {
         "all_of": [
-          ["no ac", "ac is out", "ac stopped", "ac quit", "ac died", "ac broke", "ac not working", "ac isn't working", "ac is not working", "not cooling", "blowing hot", "blowing warm", "air conditioner"],
-          ["elderly", "grandma", "grandmother", "grandpa", "grandfather", "my mom is", "my dad is", "baby", "infant", "newborn", "pregnant", "oxygen", "medical", "disabled", "heart condition", "dialysis"]
+          [
+            "re:\\bac\\b[^.?!]{0,30}\\b(dead|died|out|stopped|quit|broke|broken|failed|down|not (working|cooling|running|turning on|blowing cold)|isn't (working|cooling|running)|won't (work|cool|turn on|come on|start)|doesn't (work|cool))\\b",
+            "re:\\b(no|without|lost)\\s+(ac|cooling|cold air)\\b",
+            "re:\\b(not|isn't|won't|stopped|quit)\\s+cooling\\b",
+            "re:\\bblowing\\s+(hot|warm)\\b",
+            "re:\\bair\\b[^.?!]{0,20}\\b(dead|died|stopped|quit|not working|isn't working|won't turn on|not cooling)\\b"
+          ],
+          [
+            "elderly",
+            "senior",
+            "grandma",
+            "grandmother",
+            "grandpa",
+            "grandfather",
+            "nursing home",
+            "re:\\b(?:she|he|they|mom|mother|dad|father|grandma|grandpa|wife|husband)(?:'s| is| are)\\s+(?:6[5-9]|[7-9]\\d|1[01]\\d)\\b",
+            "re:\\b(?:6[5-9]|[7-9]\\d|1[01]\\d)[- ]?(?:years?|yrs?)[- ]?old\\b",
+            "re:\\bage[ds]?\\s+(?:6[5-9]|[7-9]\\d|1[01]\\d)\\b",
+            "baby",
+            "infant",
+            "newborn",
+            "re:\\b\\d{1,2}[- ]?(?:weeks?|months?)[- ]?old\\b",
+            "pregnant",
+            "medical condition",
+            "health condition",
+            "heart condition",
+            "heart problems",
+            "medical",
+            "oxygen",
+            "copd",
+            "asthma",
+            "dialysis",
+            "chemo",
+            "chemotherapy",
+            "hospice",
+            "bedridden",
+            "diabetic",
+            "disabled",
+            "disability",
+            "wheelchair",
+            "special needs"
+          ]
+        ]
+      },
+      "alert_on_call": true
+    },
+    {
+      "id": "no-cooling",
+      "label": "No cooling",
+      "urgency_by_season": {
+        "season": "hot_season",
+        "in_season": "urgent",
+        "out_of_season": "routine"
+      },
+      "match": {
+        "any": [
+          "re:\\bac\\b[^.?!]{0,30}\\b(dead|died|out|stopped|quit|broke|broken|failed|down|not (working|cooling|running|turning on|blowing cold)|isn't (working|cooling|running)|won't (work|cool|turn on|come on|start)|doesn't (work|cool))\\b",
+          "re:\\b(no|without|lost)\\s+(ac|cooling|cold air)\\b",
+          "re:\\b(not|isn't|won't|stopped|quit)\\s+cooling\\b",
+          "re:\\bblowing\\s+(hot|warm)\\b",
+          "re:\\bair\\b[^.?!]{0,20}\\b(dead|died|stopped|quit|not working|isn't working|won't turn on|not cooling)\\b"
         ]
       },
       "alert_on_call": false
@@ -87,8 +227,30 @@
       "urgency": "emergency",
       "match": {
         "all_of": [
-          ["no heat", "heat is out", "heater not working", "heater isn't working", "heater stopped", "furnace not working", "furnace stopped", "furnace is out", "not heating", "blowing cold"],
-          ["freezing", "below freezing", "below 32", "pipes", "ice storm", "snow", "frozen", "teens", "20 degrees", "single digits"]
+          [
+            "no heat",
+            "heat is out",
+            "heater not working",
+            "heater isn't working",
+            "heater stopped",
+            "furnace not working",
+            "furnace stopped",
+            "furnace is out",
+            "not heating",
+            "blowing cold"
+          ],
+          [
+            "freezing",
+            "below freezing",
+            "below 32",
+            "pipes",
+            "ice storm",
+            "snow",
+            "frozen",
+            "teens",
+            "20 degrees",
+            "single digits"
+          ]
         ]
       },
       "alert_on_call": true
@@ -111,13 +273,21 @@
     "max_days_ahead": 14,
     "offer_count": 2,
     "attendee_email": {
-      "placeholder_local_part": "jb-demo",
-      "placeholder_domain_env": "CALCOM_PLACEHOLDER_EMAIL_DOMAIN"
+      "placeholder_template_env": "PLACEHOLDER_EMAIL_TEMPLATE"
     }
   },
-  "transfer": {"enabled": false, "demo_simulate": true},
-  "voice": {"retell_agent_id_env": "RETELL_AGENT_ID_JOLLY", "ws_token_env": "RETELL_WS_TOKEN_JOLLY"},
-  "language_support": {"en": "full", "es": "callback_only"},
+  "transfer": {
+    "enabled": false,
+    "demo_simulate": true
+  },
+  "voice": {
+    "retell_agent_id_env": "RETELL_AGENT_ID_JOLLY",
+    "ws_token_env": "RETELL_WS_TOKEN_JOLLY"
+  },
+  "language_support": {
+    "en": "full",
+    "es": "callback_only"
+  },
   "brand_voice": {
     "description": "Warm, friendly, honest, family-business feel. No upselling. Short sentences.",
     "sample_phrases": [
@@ -146,15 +316,17 @@
     "en": "Hi, thanks for calling Jolly Brothers Services. I'm their AI assistant, and this call may be recorded.",
     "es": "Hola, gracias por llamar a Jolly Brothers Services. Soy su asistente de inteligencia artificial y esta llamada puede ser grabada."
   },
-  "metrics": {"avg_job_value_usd": 450},
+  "metrics": {
+    "avg_job_value_usd": 450
+  },
   "demo": {
     "enabled": true,
     "built_for": "Jolly Brothers Services",
     "banner": "Spec demo built for Jolly Brothers Services. Bookings go to a demo calendar."
   },
   "todos": [
-    "service_area: confirm surrounding cities from the Jolly Brothers website",
-    "service_area: confirm Round Rock ZIPs 78664, 78665, 78681",
+    "service_area: confirm which unverified candidates are covered (Round Rock ZIPs 78664/78665/78681, Georgetown, Hutto, Pflugerville, Cedar Park, Leander, Austin) and list any excluded areas",
+    "seasons: confirm hot_season May 1 - Oct 31",
     "metrics: confirm average job value (placeholder 450 USD)",
     "disclosure.es and Spanish safety script: native-speaker review"
   ]
