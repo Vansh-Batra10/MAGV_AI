@@ -221,7 +221,7 @@ def main(argv: list[str] | None = None) -> int:
         level=settings.log_level, fmt="console", hash_salt=settings.log_hash_salt.get_secret_value()
     )
     if not settings.anthropic_api_key or not settings.anthropic_api_key.get_secret_value():
-        print("ANTHROPIC_API_KEY is not set (put it in .env).", file=sys.stderr)
+        print("No API key: set RECEPTIONIST_ANTHROPIC_API_KEY.", file=sys.stderr)
         return 2
     from receptionist.main import _default_llm
 

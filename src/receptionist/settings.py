@@ -9,7 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, Field, SecretStr, model_validator
+from pydantic import AliasChoices, BaseModel, Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 AppEnv = Literal["dev", "test", "demo", "production"]
@@ -35,7 +35,9 @@ DEFAULT_MODEL_PRICES: dict[str, ModelPrice] = {
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", extra="ignore", populate_by_name=True
+    )
 
     app_env: AppEnv = "dev"
     database_url: str = "sqlite+aiosqlite:///./var/receptionist.db"
@@ -58,7 +60,12 @@ class Settings(BaseSettings):
     model_caller_sim: str = "claude-sonnet-5-5"
     model_prices: dict[str, ModelPrice] = Field(default_factory=lambda: dict(DEFAULT_MODEL_PRICES))
 
-    anthropic_api_key: SecretStr | None = None
+    # RECEPTIONIST_ANTHROPIC_API_KEY wins: Claude Code cloud environments reserve
+    # ANTHROPIC_API_KEY for their own auth and don't pass it to the session.
+    anthropic_api_key: SecretStr | None = Field(
+        default=None,
+        validation_alias=AliasChoices("RECEPTIONIST_ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY"),
+    )
     llm_live_timeout_s: float = 8.0
     max_tool_rounds: int = 3
 

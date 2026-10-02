@@ -38,3 +38,15 @@ def test_default_models() -> None:
     assert s.model_summary == "claude-sonnet-5-5"
     assert s.model_judge == "claude-opus-5-5"
     assert set(s.model_prices) >= {"claude-haiku-4-5", "claude-sonnet-5-5", "claude-opus-5-5"}
+
+
+def test_api_key_alias_precedence(monkeypatch: pytest.MonkeyPatch) -> None:
+    from receptionist.settings import Settings
+
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "plain")
+    s = Settings(_env_file=None)  # type: ignore[call-arg]
+    assert s.anthropic_api_key is not None and s.anthropic_api_key.get_secret_value() == "plain"
+    monkeypatch.setenv("RECEPTIONIST_ANTHROPIC_API_KEY", "preferred")
+    s = Settings(_env_file=None)  # type: ignore[call-arg]
+    assert s.anthropic_api_key is not None
+    assert s.anthropic_api_key.get_secret_value() == "preferred"

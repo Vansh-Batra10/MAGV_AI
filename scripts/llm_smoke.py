@@ -42,7 +42,7 @@ def main() -> int:
         log_format="console",
     )
     if not settings.anthropic_api_key or not settings.anthropic_api_key.get_secret_value():
-        print("ANTHROPIC_API_KEY is not set (environment or .env).", file=sys.stderr)
+        print("No API key: set RECEPTIONIST_ANTHROPIC_API_KEY.", file=sys.stderr)
         return 2
     upgrade(url)
     print(f"Model: {settings.model_live} · demo clock Sat Oct 3, 2:10 PM CDT\n")
