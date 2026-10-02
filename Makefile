@@ -6,7 +6,7 @@ HOST ?= 127.0.0.1
 PORT ?= 8000
 
 .DEFAULT_GOAL := help
-.PHONY: help setup hooks run test lint fmt migrate validate-config secrets check eval eval-core seed tunnel clean
+.PHONY: help setup hooks run test lint fmt migrate validate-config secrets check eval eval-core smoke-llm seed tunnel clean
 
 help: ## Show this help
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -49,6 +49,9 @@ secrets: ## Scan every tracked file for API-key patterns
 	$(BIN)/python scripts/check_secrets.py --all
 
 check: secrets lint test validate-config ## Everything CI runs
+
+smoke-llm: ## 30-second live check: two turns through the real model (needs ANTHROPIC_API_KEY)
+	$(BIN)/python scripts/llm_smoke.py
 
 eval-core: ## Minimal eval: 10 core personas vs the agent (needs ANTHROPIC_API_KEY)
 	$(BIN)/python -m evals.runner --personas core --parallel 4 --threshold 0.8
