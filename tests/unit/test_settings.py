@@ -43,6 +43,7 @@ def test_default_models() -> None:
 def test_api_key_alias_precedence(monkeypatch: pytest.MonkeyPatch) -> None:
     from receptionist.settings import Settings
 
+    monkeypatch.delenv("RECEPTIONIST_ANTHROPIC_API_KEY", raising=False)
     monkeypatch.setenv("ANTHROPIC_API_KEY", "plain")
     s = Settings(_env_file=None)  # type: ignore[call-arg]
     assert s.anthropic_api_key is not None and s.anthropic_api_key.get_secret_value() == "plain"
