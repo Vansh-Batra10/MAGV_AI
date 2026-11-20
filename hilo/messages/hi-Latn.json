@@ -1,0 +1,168 @@
+{
+  "gift": {
+    "tapToOpen": "Kholne ke liye tap karo 💌",
+    "surpriseFor": "<em>{name}</em> ke liye ek surprise",
+    "from": "{name} ki taraf se",
+    "tapToContinue": "Aage ke liye tap karo",
+    "soundOn": "Sound on karo",
+    "soundOff": "Sound off karo",
+    "previewWatermark": "Preview · {brand}",
+    "forName": "{name} ke liye",
+    "tapTheHeart": "Dil pe tap karo",
+    "freeBadge": "{brand} free gift",
+    "keepForever": "Isse hamesha ke liye rakho 💌",
+    "makeOne": "Kisi ke liye tum bhi banao →",
+    "madeWith": "{brand} pe ♥ se bana — apna banao",
+    "theSender": "unhe",
+    "continue": "Aage",
+    "close": "Band karo",
+    "playVoice": "Voice note chalao",
+    "ourSong": "Apna gaana",
+    "ourSongUntitled": "Jo sirf apna hai",
+    "playSong": "Apna gaana chalao",
+    "openIn": "{provider} mein kholo",
+    "spotifyPreviewNote": "Login nahi ho toh Spotify sirf chhota preview chala sakta hai.",
+    "expired": {
+      "title": "Ye surprise ab dhundhla ho gaya ✨",
+      "body": "Free gifts 24 ghante chamakte hain. {name} ise hamesha ke liye wapas la sakte hain.",
+      "ask": "{name} se bolo wapas laaye",
+      "asked": "{name} ko bata diya 💌",
+      "makeOwn": "Apna banao"
+    },
+    "password": {
+      "title": "Ye gift locked hai 🔒",
+      "body": "{name} ne password lagaya hai. Shayad wo jo sirf tum dono jaante ho.",
+      "label": "Password",
+      "open": "Kholo",
+      "wrong": "Nahi hua. Phir try karo?",
+      "tooMany": "Bahut zyada try. Thoda ruko."
+    },
+    "footer": {
+      "remove": "Ye theek nahi laga? Hatao",
+      "report": "Report karo",
+      "removeTitle": "Ye gift hatana hai?",
+      "removeBody": "Agar isme tumhari photos hain aur tum comfortable nahi ho, hum ise turant chhupa denge aur review karenge. Sender ko bataya jayega.",
+      "reportTitle": "Is gift ko report karo",
+      "reasonLabel": "Kya galat hai? (optional)",
+      "contactLabel": "Jawab chahiye toh email (optional)",
+      "submitRemove": "Gift chhupao",
+      "submitReport": "Report bhejo",
+      "done": "Ho gaya. Review tak chhupa diya hai.",
+      "reported": "Shukriya — hum dekhenge.",
+      "cancel": "Rehne do"
+    },
+    "removed": {
+      "title": "Ye gift available nahi hai",
+      "body": "Ise hata diya gaya hai ya review mein hai."
+    },
+    "notYet": {
+      "title": "Abhi nahi… ✨",
+      "body": "Ye surprise {date} ko khulega."
+    },
+    "reply": {
+      "title": "{name} ko kuch wapas bhejo",
+      "heart": "Dil",
+      "text": "Likho",
+      "voice": "Voice",
+      "placeholder": "Bol do…",
+      "send": "Bhejo",
+      "sent": "{name} ko bhej diya 💌",
+      "previewNote": "Asli gift mein ye seedha sender ke paas jaata hai."
+    },
+    "reaction": {
+      "title": "{name} ko apna reaction bhejoge? 🎥",
+      "body": "15 second ka selfie clip. Sirf {name} dekhenge.",
+      "start": "Reaction record karo",
+      "recording": "Recording ho rahi hai",
+      "stop": "Roko",
+      "discard": "Hata do",
+      "send": "{name} ko bhejo",
+      "consent": "{brand} ise publicly dikha sakta hai (optional)",
+      "sent": "Bhej diya. {name} ko bahut pasand aayega.",
+      "failed": "Yahan camera available nahi hai.",
+      "voiceInstead": "Voice reply bhejo",
+      "openInBrowser": "Tip: camera ke liye ye link Safari ya Chrome mein kholo."
+    },
+    "ld": {
+      "yours": "Mera shehar",
+      "theirs": "{name} ka shehar",
+      "apart": "door"
+    },
+    "bday": {
+      "midnight": "Kahin khaas jagah pe midnight hai, {name}…",
+      "lightThem": "Candles jalao",
+      "makeAWish": "Ek wish maango…",
+      "hbd": "Happy birthday, <em>{name}</em>!",
+      "candle": "Candle {n}",
+      "tapCandles": "Har candle pe tap karke jalao",
+      "blowNow": "Ab mic mein phoonk maaro! 🌬️",
+      "blowMic": "Mic mein phoonk maaro 🌬️",
+      "micFailed": "Mic nahi chala — tap karke bujhao",
+      "tapToBlow": "ya tap karke bujhao",
+      "age": "Hello, {n} ✨"
+    },
+    "sorry": {
+      "meter": "Gussa meter",
+      "intro": "{name}, pata hai. Bas do minute doge?",
+      "coupon": "Official rishwat coupon",
+      "noExpiry": "Koi expiry nahi · no bargaining",
+      "forgiven": "Maaf kiya?",
+      "yes": "Haan 🥹",
+      "tryHarder": "Thoda aur manao",
+      "later": "Baad mein baat karte hain",
+      "thankYou": "Thank you. Momos meri taraf se. 🥟",
+      "okayLater": "Theek hai. Jab ready ho, main yahin hoon."
+    },
+    "snow": {
+      "title": "<em>{name}</em> ke liye thodi si sardi",
+      "tapShake": "Globe pe tap karo, barf giregi",
+      "shakePhone": "Phone hilao ❄️",
+      "shakeNow": "Hilao! ❄️",
+      "openOrnaments": "Ornaments kholo",
+      "tapOrnament": "Kisi ornament pe tap karo",
+      "merry": "Merry Christmas, <em>{name}</em>"
+    },
+    "year": {
+      "rewound": "Rewound",
+      "us": "{a} & {b}",
+      "statOf": "Stat {n}/{total}",
+      "mostSaid": "Sabse zyada bola gaya",
+      "top": "Top 5",
+      "memories": "yaadein",
+      "songOfYear": "Saal ka gaana",
+      "promises": "ke promises",
+      "happyNewYear": "Happy New Year 🎆"
+    },
+    "group": {
+      "board": "{n} notes, sirf tumhare liye",
+      "finale": "Finale dekho ✨",
+      "defaultHeadline": "{n} logon ne ye tumhare liye banaya",
+      "fromAll": "Sab ki taraf se ♥",
+      "replyTitle": "Sabko thank you bolo",
+      "variant": {
+        "birthday": "Happy birthday, {name} 🎂",
+        "anniversary": "Happy anniversary, {name} 💍",
+        "farewell": "Tumhari yaad aayegi, {name} 🌙",
+        "festival": "Dher saari shubhkamnayein, {name} ✨",
+        "thanks": "Thank you, {name} 💛"
+      }
+    }
+  },
+  "media": {
+    "record": "Record karo",
+    "stop": "Roko",
+    "rerecord": "Phir se record karo",
+    "unsupported": "Is browser mein recording nahi chal rahi.",
+    "uploadInstead": "Audio file upload karo",
+    "openInBrowser": "Safari/Chrome mein kholne ke liye link copy karo",
+    "linkCopied": "Link copy ho gaya — Safari ya Chrome mein paste karo. Draft saved hai.",
+    "maxSeconds": "{n} second tak.",
+    "photosAdd": "Photos daalo",
+    "photosUploading": "Upload ho rahi {done}/{total}…",
+    "photosLimit": "{n} tak",
+    "remove": "Hatao",
+    "moveLeft": "Pehle karo",
+    "moveRight": "Baad mein karo",
+    "uploadFailed": "Upload nahi hua. Phir try karein?"
+  }
+}

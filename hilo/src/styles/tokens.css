@@ -1,0 +1,36 @@
+:root {
+  --ink-950: #0B0714;
+  --ink-900: #120B20;
+  --plum-900: #1A0F2E;
+  --plum-700: #3B1F5C;
+  --plum-500: #6B3FA0;
+  --lavender-300: #C9B6FF;
+  --rose-500: #FF4D7E;
+  --rose-400: #FF7A9C;
+  --coral-400: #FF8A65;
+  --amber-300: #FFC870;
+  --blush-100: #FFE4EC;
+  --cream-50: #FFF8EF;
+  --paper-200: #F3E6D3;
+  --ink-text: #2A1E1A;
+  --text-hi: #FFF5F8;
+  --text-mid: rgba(255, 245, 248, 0.72);
+  --text-lo: rgba(255, 245, 248, 0.48);
+
+  --grad-kiss: linear-gradient(120deg, var(--rose-500) 0%, var(--coral-400) 55%, var(--amber-300) 100%);
+  --grad-aurora: radial-gradient(120% 80% at 70% 10%, rgba(201, 182, 255, 0.16) 0%, transparent 45%),
+    radial-gradient(90% 70% at 20% 30%, var(--plum-700) 0%, transparent 60%),
+    radial-gradient(140% 120% at 50% 100%, var(--plum-900) 0%, var(--ink-950) 70%);
+  --grad-paper: linear-gradient(170deg, var(--cream-50) 0%, var(--paper-200) 100%);
+
+  /* the one dominant glow per screen; overridden by [data-glow] */
+  --glow: var(--rose-500);
+  --glow-rgb: 255, 77, 126;
+
+  --ease-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius-card: 24px;
+}
+
+[data-glow="amber"] { --glow: var(--amber-300); --glow-rgb: 255, 200, 112; }
+[data-glow="lavender"] { --glow: var(--lavender-300); --glow-rgb: 201, 182, 255; }
+[data-glow="rose"] { --glow: var(--rose-500); --glow-rgb: 255, 77, 126; }

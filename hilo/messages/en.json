@@ -1,0 +1,168 @@
+{
+  "gift": {
+    "tapToOpen": "Tap to open 💌",
+    "surpriseFor": "A surprise for <em>{name}</em>",
+    "from": "from {name}",
+    "tapToContinue": "Tap to continue",
+    "soundOn": "Turn sound on",
+    "soundOff": "Turn sound off",
+    "previewWatermark": "Preview · {brand}",
+    "forName": "For {name}",
+    "tapTheHeart": "Tap the heart",
+    "freeBadge": "{brand} free gift",
+    "keepForever": "Keep this forever 💌",
+    "makeOne": "Make one for someone →",
+    "madeWith": "Made with ♥ on {brand} — make one",
+    "theSender": "them",
+    "continue": "Continue",
+    "close": "Close",
+    "playVoice": "Play voice note",
+    "ourSong": "Our song",
+    "ourSongUntitled": "The one that's ours",
+    "playSong": "Play our song",
+    "openIn": "Open in {provider}",
+    "spotifyPreviewNote": "Spotify may play a short preview if you're not logged in.",
+    "expired": {
+      "title": "This surprise has faded ✨",
+      "body": "Free gifts glow for 24 hours. {name} can bring it back forever.",
+      "ask": "Ask {name} to bring it back",
+      "asked": "We've let {name} know 💌",
+      "makeOwn": "Make your own"
+    },
+    "password": {
+      "title": "This gift is locked 🔒",
+      "body": "{name} added a password. It's probably something only you two know.",
+      "label": "Password",
+      "open": "Open",
+      "wrong": "Not quite. Try again?",
+      "tooMany": "Too many tries. Wait a few minutes."
+    },
+    "footer": {
+      "remove": "Not okay with this? Remove it",
+      "report": "Report abuse",
+      "removeTitle": "Remove this gift?",
+      "removeBody": "If this gift has your photos and you're not okay with it, we'll hide it right away and review it. The sender will be told it was taken down.",
+      "reportTitle": "Report this gift",
+      "reasonLabel": "What's wrong? (optional)",
+      "contactLabel": "Your email, if you want a reply (optional)",
+      "submitRemove": "Hide this gift",
+      "submitReport": "Send report",
+      "done": "Done. It's hidden while we review it.",
+      "reported": "Thanks — we'll take a look.",
+      "cancel": "Cancel"
+    },
+    "removed": {
+      "title": "This gift isn't available",
+      "body": "It was removed or is under review."
+    },
+    "notYet": {
+      "title": "Not yet… ✨",
+      "body": "This surprise opens on {date}."
+    },
+    "reply": {
+      "title": "Send {name} something back",
+      "heart": "Heart",
+      "text": "Write",
+      "voice": "Voice",
+      "placeholder": "Say it…",
+      "send": "Send",
+      "sent": "Sent to {name} 💌",
+      "previewNote": "In the real gift, this goes straight to the sender."
+    },
+    "reaction": {
+      "title": "Want to send {name} your reaction? 🎥",
+      "body": "A 15-second front-camera clip. Only {name} sees it.",
+      "start": "Record my reaction",
+      "recording": "Recording",
+      "stop": "Stop",
+      "discard": "Discard",
+      "send": "Send to {name}",
+      "consent": "Also let {brand} feature it publicly (optional)",
+      "sent": "Sent. {name} is going to love this.",
+      "failed": "The camera isn't available here.",
+      "voiceInstead": "Send a voice reply instead",
+      "openInBrowser": "Tip: open this link in Safari or Chrome to use the camera."
+    },
+    "ld": {
+      "yours": "My city",
+      "theirs": "{name}'s city",
+      "apart": "apart"
+    },
+    "bday": {
+      "midnight": "It's midnight somewhere special, {name}…",
+      "lightThem": "Light the candles",
+      "makeAWish": "Make a wish…",
+      "hbd": "Happy birthday, <em>{name}</em>!",
+      "candle": "Candle {n}",
+      "tapCandles": "Tap each candle to light it",
+      "blowNow": "Now blow into your mic! 🌬️",
+      "blowMic": "Blow into your mic 🌬️",
+      "micFailed": "Mic not available — tap to blow them out",
+      "tapToBlow": "or tap to blow them out",
+      "age": "Hello, {n} ✨"
+    },
+    "sorry": {
+      "meter": "Mood meter",
+      "intro": "{name}, I know. Give me two minutes?",
+      "coupon": "Official bribe coupon",
+      "noExpiry": "No expiry · non-negotiable",
+      "forgiven": "Forgiven?",
+      "yes": "Yes 🥹",
+      "tryHarder": "Try a little harder",
+      "later": "Let's talk later",
+      "thankYou": "Thank you. Momos on me. 🥟",
+      "okayLater": "Okay. I'll be here when you're ready."
+    },
+    "snow": {
+      "title": "A little winter for <em>{name}</em>",
+      "tapShake": "Tap the globe to make it snow",
+      "shakePhone": "Shake your phone ❄️",
+      "shakeNow": "Shake it! ❄️",
+      "openOrnaments": "Open the ornaments",
+      "tapOrnament": "Tap an ornament",
+      "merry": "Merry Christmas, <em>{name}</em>"
+    },
+    "year": {
+      "rewound": "Rewound",
+      "us": "{a} & {b}",
+      "statOf": "Stat {n} of {total}",
+      "mostSaid": "Most-said word",
+      "top": "Top 5",
+      "memories": "memories",
+      "songOfYear": "Song of the year",
+      "promises": "promises",
+      "happyNewYear": "Happy New Year 🎆"
+    },
+    "group": {
+      "board": "{n} notes, just for you",
+      "finale": "See the finale ✨",
+      "defaultHeadline": "{n} people made this for you",
+      "fromAll": "From all of us ♥",
+      "replyTitle": "Say thank you to everyone",
+      "variant": {
+        "birthday": "Happy birthday, {name} 🎂",
+        "anniversary": "Happy anniversary, {name} 💍",
+        "farewell": "We'll miss you, {name} 🌙",
+        "festival": "Warm wishes, {name} ✨",
+        "thanks": "Thank you, {name} 💛"
+      }
+    }
+  },
+  "media": {
+    "record": "Record",
+    "stop": "Stop",
+    "rerecord": "Record again",
+    "unsupported": "Recording isn't available in this browser.",
+    "uploadInstead": "Upload an audio file",
+    "openInBrowser": "Copy link to open in Safari/Chrome",
+    "linkCopied": "Link copied — paste it in Safari or Chrome. Your draft is saved.",
+    "maxSeconds": "Up to {n} seconds.",
+    "photosAdd": "Add photos",
+    "photosUploading": "Uploading {done}/{total}…",
+    "photosLimit": "Up to {n}",
+    "remove": "Remove",
+    "moveLeft": "Move earlier",
+    "moveRight": "Move later",
+    "uploadFailed": "Upload failed. Try again?"
+  }
+}
