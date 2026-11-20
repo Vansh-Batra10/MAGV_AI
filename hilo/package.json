@@ -67,5 +67,13 @@
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vitest": "^5.1.1"
+  },
+  "overrides": {
+    "@tailwindcss/node": {
+      "magic-string": "^0.30.21"
+    }
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }
