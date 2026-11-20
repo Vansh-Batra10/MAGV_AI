@@ -27,6 +27,7 @@ export default async function GroupPage({ params }: { params: Promise<{ site: st
         </div>
       </PageHero>
       <section className="container-x grid items-center gap-14 md:grid-cols-[1fr_340px]">
+        <div>
         <ol className="flex flex-col gap-6">
           {[["s1", "s1b"], ["s2", "s2b"], ["s3", "s3b"]].map(([a, b], k) => (
             <Reveal key={a} delay={k * 80} as="li" className="glass flex gap-5 p-6">
@@ -34,8 +35,9 @@ export default async function GroupPage({ params }: { params: Promise<{ site: st
               <div><h2 className="h3 text-hi">{t(a)}</h2><p className="mt-2 text-mid">{t(b)}</p></div>
             </Reveal>
           ))}
-          <p className="mt-4 text-sm leading-relaxed text-lo">{t("uses")}</p>
         </ol>
+          <p className="mt-6 text-sm leading-relaxed text-lo">{t("uses")}</p>
+        </div>
         <LiveThumb slug="sab-ki-taraf-se" />
       </section>
     </main>

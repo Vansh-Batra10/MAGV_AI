@@ -73,13 +73,23 @@ export function Starfield({ className, density = 1, brighten = false, shooting =
         }
       }
     };
+    // Twinkle is slow: ~24fps is plenty and keeps the main thread free. Start after page load (LCP-friendly).
+    let last = 0;
     const loop = (t: number) => {
-      if (running && visible) draw(t);
+      if (running && visible && t - last > 41) {
+        last = t;
+        draw(t);
+      }
       raf = requestAnimationFrame(loop);
     };
     resize();
     draw(0);
-    if (!perf.reduced) raf = requestAnimationFrame(loop);
+    let startTimer: number | undefined;
+    const start = () => (startTimer = window.setTimeout(() => (raf = requestAnimationFrame(loop)), 1200));
+    if (!perf.reduced) {
+      if (document.readyState === "complete") start();
+      else window.addEventListener("load", start, { once: true });
+    }
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
     const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
@@ -88,6 +98,8 @@ export function Starfield({ className, density = 1, brighten = false, shooting =
     document.addEventListener("visibilitychange", onVis);
     return () => {
       cancelAnimationFrame(raf);
+      window.clearTimeout(startTimer);
+      window.removeEventListener("load", start);
       ro.disconnect();
       io.disconnect();
       document.removeEventListener("visibilitychange", onVis);

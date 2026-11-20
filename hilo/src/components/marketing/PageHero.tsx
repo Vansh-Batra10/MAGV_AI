@@ -9,10 +9,10 @@ export function PageHero({ eyebrow, title, sub, children, glow }: { eyebrow?: st
       <Starfield density={0.9} />
       <ThreadArc color="var(--glow)" d="M -20 560 C 400 500, 700 200, 1220 120" />
       <div className="container-x relative">
-        {eyebrow && <p className="eyebrow anim-rise mb-4">{eyebrow}</p>}
-        <h1 className="h1 anim-rise max-w-4xl text-hi" style={{ animationDelay: "60ms" }}>{title}</h1>
-        {sub && <p className="body-lg anim-rise mt-5 max-w-2xl text-mid" style={{ animationDelay: "120ms" }}>{sub}</p>}
-        {children && <div className="anim-rise mt-8" style={{ animationDelay: "180ms" }}>{children}</div>}
+        {eyebrow && <p className="eyebrow anim-lift mb-4">{eyebrow}</p>}
+        <h1 className="h1 anim-lift max-w-4xl text-hi" style={{ animationDelay: "60ms" }}>{title}</h1>
+        {sub && <p className="body-lg anim-lift mt-5 max-w-2xl text-mid" style={{ animationDelay: "120ms" }}>{sub}</p>}
+        {children && <div className="anim-lift mt-8" style={{ animationDelay: "180ms" }}>{children}</div>}
       </div>
     </section>
   );

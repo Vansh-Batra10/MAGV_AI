@@ -114,12 +114,15 @@
 @keyframes draw { to { stroke-dashoffset: 0; } }
 @keyframes pulse-glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
 @keyframes rise { from { opacity: 0; transform: translateY(24px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes lift { from { transform: translateY(18px); } to { transform: none; } }
 @keyframes spin-slow { to { transform: rotate(360deg); } }
 @keyframes flicker { 0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.95; } 25% { transform: scale(1.06, 0.96) rotate(2deg); } 50% { transform: scale(0.96, 1.05) rotate(-1deg); opacity: 1; } 75% { transform: scale(1.03) rotate(1deg); } }
 
 .anim-floaty { animation: floaty 6s var(--ease-expo) infinite; }
 .anim-flicker { animation: flicker 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
 .anim-rise { animation: rise 0.8s var(--ease-expo) both; }
+/* Above-the-fold copy: transform-only so it is visible at first paint (LCP). */
+.anim-lift { animation: lift 0.9s var(--ease-expo) both; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

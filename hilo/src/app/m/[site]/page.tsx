@@ -70,16 +70,16 @@ export default async function Home({ params, searchParams }: { params: Promise<{
         <ThreadArc color="var(--glow)" />
         <div className="container-x relative grid items-center gap-14 md:grid-cols-[1.15fr_1fr]">
           <div>
-            <p className="anim-rise inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-[13px] font-medium text-hi backdrop-blur" data-testid="hero-eyebrow">
+            <p className="anim-lift inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-[13px] font-medium text-hi backdrop-blur" data-testid="hero-eyebrow">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--glow)] shadow-[0_0_8px_var(--glow)]" /> {eyebrow}
             </p>
-            <h1 className="h1 anim-rise mt-6 text-hi" style={{ animationDelay: "80ms" }}>{t.rich("h1", { em })}</h1>
-            <p className="body-lg anim-rise mt-6 max-w-xl text-mid" style={{ animationDelay: "160ms" }}>{t("sub")}</p>
-            <div className="anim-rise mt-9 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: "240ms" }}>
+            <h1 className="h1 anim-lift mt-6 text-hi" style={{ animationDelay: "80ms" }}>{t.rich("h1", { em })}</h1>
+            <p className="body-lg anim-lift mt-6 max-w-xl text-mid" style={{ animationDelay: "160ms" }}>{t("sub")}</p>
+            <div className="anim-lift mt-9 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: "240ms" }}>
               <ButtonLink href={h("/gifts")} size="lg">{t("ctaPrimary")}</ButtonLink>
               <ButtonLink href={h("/group")} size="lg" variant="glass">{t("ctaGroup")}</ButtonLink>
             </div>
-            <ul className="anim-rise mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-mid" style={{ animationDelay: "320ms" }}>
+            <ul className="anim-lift mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-mid" style={{ animationDelay: "320ms" }}>
               {trust.map((x) => <li key={x} className="flex items-center gap-1.5"><Check size={14} className="text-[var(--glow)]" /> {x}</li>)}
             </ul>
           </div>

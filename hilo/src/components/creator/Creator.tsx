@@ -214,7 +214,7 @@ export function Creator({ slug, initialLang, giftMessages, initialName, initialS
       <div className="relative z-10 mx-auto grid max-w-6xl gap-6 px-4 pb-8 md:grid-cols-[1fr_380px] md:gap-12 md:px-8 md:pt-8">
         {/* Preview: top on mobile, right on desktop */}
         <div className="order-1 md:order-2">
-          <div className="relative mx-auto h-[45dvh] max-h-[460px] md:h-auto md:max-h-none">
+          <div className="relative mx-auto h-[34dvh] max-h-[380px] md:h-auto md:max-h-none">
             <div className="mx-auto h-full md:hidden" style={{ aspectRatio: "390/844" }}>
               <div className="h-full w-full overflow-hidden rounded-[28px] border border-white/10 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.9)]">
                 <ScaledStage>{renderer("thumbnail", view)}</ScaledStage>
@@ -222,8 +222,8 @@ export function Creator({ slug, initialLang, giftMessages, initialName, initialS
             </div>
             <div className="hidden md:block md:sticky md:top-8"><PhoneFrame className="max-w-[340px]">{renderer("thumbnail", view)}</PhoneFrame></div>
           </div>
-          <div className="mt-3 flex justify-center">
-            <button type="button" onClick={() => setView("preview")} className="inline-flex h-10 items-center gap-2 rounded-full bg-white/5 px-4 text-sm text-mid hover:text-hi"><Maximize2 size={14} /> {t("fullPreview")}</button>
+          <div className="mt-2 flex justify-center md:mt-3">
+            <button type="button" onClick={() => setView("preview")} className="inline-flex h-9 items-center gap-2 rounded-full bg-white/5 px-4 text-xs text-mid hover:text-hi md:h-10 md:text-sm"><Maximize2 size={14} /> {t("fullPreview")}</button>
           </div>
         </div>
 
@@ -241,10 +241,10 @@ export function Creator({ slug, initialLang, giftMessages, initialName, initialS
               </div>
             </div>
           ) : (
-            <div className="glass-strong relative flex min-h-[46dvh] flex-col p-5 md:min-h-[560px] md:p-10">
+            <div className="glass-strong relative flex flex-col p-5 md:min-h-[560px] md:p-10">
               {q && (
                 <>
-                  <div className="mb-6 flex items-center gap-3">
+                  <div className="mb-4 flex items-center gap-3 md:mb-6">
                     <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/10">
                       <div className="h-full rounded-full bg-[var(--glow)] shadow-[0_0_10px_var(--glow)] transition-[width] duration-500" style={{ width: `${((step + 1) / tpl.questions.length) * 100}%` }} />
                     </div>
@@ -261,7 +261,7 @@ export function Creator({ slug, initialLang, giftMessages, initialName, initialS
                   </AnimatePresence>
                   {saveState === "error" && <p className="mt-3 text-sm text-amber-300">{t("errorSave")}</p>}
                   {saveState === "blocked" && <p className="mt-3 text-sm text-rose-400">{t("contentBlocked")}</p>}
-                  <div className="mt-8 flex items-center gap-3">
+                  <div className="mt-6 flex items-center gap-3 md:mt-8">
                     {step > 0 && <button type="button" onClick={() => setStep(step - 1)} aria-label={t("back")} className="grid h-14 w-14 place-items-center rounded-full bg-white/5 text-mid hover:text-hi"><ArrowLeft size={20} /></button>}
                     <button type="button" onClick={next} disabled={!canNext} className="flex h-14 flex-1 items-center justify-center gap-2 rounded-full text-[16px] font-semibold text-white [background:var(--grad-kiss)] shadow-[0_10px_30px_-8px_rgba(255,77,126,0.6)] disabled:opacity-40">
                       {step === tpl.questions.length - 1 ? <><Sparkles size={18} /> {t("fullPreview")}</> : <>{t("next")} <ArrowRight size={18} /></>}

@@ -39,20 +39,22 @@ App lives in `hilo/`. `npm i && npm run dev` works with zero env vars (MOCK mode
 
 ### Release 1 gate
 - [x] Unit tests (`npm test`): occasions, pricing, every template schema × 3 languages, songs, cities
-- [~] E2E (`npm run e2e`): free→keep forever, purchase + password gate, group + fake-clock cron reveal, reply + reaction (fake camera), editions — see latest run notes below
-- [ ] Lighthouse CI budgets (not yet wired — `npx lighthouse` manual run recommended)
-- [ ] axe accessibility pass
-- [x] `npm run build` passes · [x] lint 0 errors
-- [ ] Tag `release-1` after the items above
+- [x] E2E (`npm run build && npm run e2e`, runs against `next start`): free→keep forever (recipient-paid), purchase + password gate + edit-after-purchase, group contribute → pay → fake-clock cron reveal + outbox, reply + reaction capture (fake camera), editions (Global shows no ₹/UPI/Hinglish) — **14/14 passing** incl. axe
+- [x] axe (wcag2a/aa, serious+critical) on 9 key routes — 0 violations (color-contrast checked manually)
+- [~] Lighthouse (home, simulated Moto-G mobile): Accessibility 100 · Best practices 100 · SEO 100 · CLS 0 · TBT ~190 ms · **Performance 78, LCP ~5.2 s — misses the 2.5 s / 85 budget.** Cause: ~330 KB gz client JS on home (motion, registry + all template defs, next-intl messages). Not yet wired into CI.
+- [x] `npm run build` passes · [x] lint 0 errors · [x] tsc clean
+- [ ] Tag `release-1` once the performance budget is met
 
 ## Next steps (in order)
-1. Finish the Release 1 gate: Lighthouse budgets + axe pass; fix findings; screenshot every route (`npm run screens -- --label=release-1`) and review against §15; tag `release-1`.
+1. Finish the Release 1 gate — **performance**: cut home JS (render gallery thumbnails as static posters server-side and hydrate the live demo only on tap/visibility; pass only needed next-intl namespaces to client providers; split `motion` out of above-the-fold components; move template `defaults()` copy out of the client registry), wire Lighthouse CI with budgets (LCP < 2.5 s, CLS < 0.05, TBT < 300 ms, perf ≥ 85), then screenshot every route (`npm run screens -- --label=release-1`), review against §15 and tag `release-1`.
 2. Release 2 — Phase 8: Unlock Calendar engine (server-side lock stripping helper; cron `/api/cron/unlock` already stubbed) → #2 Open When, #8 Valentine Week, #9 Will You Be Mine?, #10 Scrapbook, #11 Love Letter AI (`/api/ai/letter` exists).
 3. Phase 9: partner program + prepaid codes (`partners`, `prepaid_codes` tables exist; `/partners`, `/redeem` are coming-soon), reviews collection email (3 days after purchase), reaction-video incentive, Season Pass flag, Google sign-in via Supabase Auth.
 4. Phase 10: 8 MDX guides + Global guides, Valentine's Week pages.
 5. Release 3: Batch C festival skins, Invite + RSVP engine, `/for/[relation]` pages.
 
 ## Known gaps / honest notes
+- Home performance budget not yet met (see Release 1 gate).
+- `npm run dev` + Playwright mobile emulation triggers Turbopack HMR page restarts on some routes; e2e therefore runs against the production server (`next start`). Real browsers in dev are unaffected in practice; investigate if it shows up.
 - WhatsApp templates must be approved before real sending; until then messages stay in the outbox.
 - Festival dates marked `verify` need human confirmation (listed in `/admin`).
 - Google sign-in is not available yet (email OTP only).

@@ -26,3 +26,6 @@ Autonomous build decisions (BUILD_SPEC §20.1). Newest at the bottom.
 22. **Release 2/3 features** (Open When, Valentine Week, Unlock Calendar, partners/prepaid codes, guides, `/for/*`) ship as honest "Coming soon" pages; their DB tables and cron endpoints already exist.
 23. **MOCK data dir** defaults to `node_modules/.cache/hilo-data` instead of `./.data`: Turbopack watches the whole project (no ignore option in Next 16), so DB/upload writes under `./.data` triggered rebuild + full-page reload loops in dev. Override with `HILO_DATA_DIR`.
 24. **canvas-confetti** is imported statically (~10 KB): its lazy chunk 404'd under Turbopack dev and the chunk-load error forced reloads.
+25. **E2E runs against `next start`** (production build), not `next dev`: under Playwright mobile emulation Turbopack's dev HMR kept restarting `/create`. Production is what ships; `HILO_OPEN_TOOLS=1` opens the outbox page and fake cron clock for tests only.
+26. **Creator skip semantics**: skipping an optional question clears that field (demo content never ships in a real gift); required photo steps need a real upload.
+27. **Above-the-fold animation** is transform-only (`.anim-lift`) so hero copy is visible at first paint; starfields run at ~24fps and start after `load`; the hero live demo mounts on idle.
