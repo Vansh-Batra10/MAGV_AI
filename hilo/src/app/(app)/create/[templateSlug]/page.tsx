@@ -24,7 +24,7 @@ export default async function CreatePage({ params, searchParams }: { params: Pro
   return (
     <>
       <h2 className="sr-only">{pick(tpl.meta.name, lang)}</h2>
-      <Creator slug={templateSlug} initialLang={lang} giftMessages={giftMessages} initialName={sp.name?.slice(0, 40)} startInForm={sp.mode === "form"} resumeId={sp.gift} />
+      <Creator slug={templateSlug} initialLang={lang} giftMessages={giftMessages} initialName={sp.name?.slice(0, 40)} initialSender={sp.sender?.slice(0, 40)} startInForm={sp.mode === "form"} resumeId={sp.gift} />
     </>
   );
 }

@@ -39,7 +39,7 @@ export function Contribute({ token, recipient, organiser, count, deadlineLabel, 
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="mx-auto flex max-w-md flex-col items-center gap-5 py-10 text-center">
         <p className="font-display text-[56px] leading-none text-hi glow-text">{t("thanks")}</p>
         <p className="text-mid">{t("thanksSub", { name: recipient })}</p>
-        <a href={`/gifts?utm_source=contributor&utm_medium=thanks&sender=${encodeURIComponent(name)}`} onClick={() => trackClient("contributor_clicked_make_own", {}, giftId)} className="mt-4 flex h-14 items-center rounded-full px-7 font-semibold text-white [background:var(--grad-kiss)]">{t("makeOwn")}</a>
+        <a href={`/create/quick-surprise?sender=${encodeURIComponent(name)}&utm_source=contributor&utm_medium=thanks`} onClick={() => trackClient("contributor_clicked_make_own", {}, giftId)} className="mt-4 flex h-14 items-center rounded-full px-7 font-semibold text-white [background:var(--grad-kiss)]">{t("makeOwn")}</a>
         <button type="button" onClick={() => { setState("form"); setMessage(""); setPhoto([]); setVoice(null); }} className="text-sm text-mid underline">{t("another")}</button>
       </motion.div>
     );

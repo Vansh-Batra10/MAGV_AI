@@ -23,7 +23,8 @@ export const ENV = {
   authSecret: e.AUTH_SECRET || "dev-only-insecure-secret-change-me-please-32b",
   adminEmails: (e.ADMIN_EMAILS || "admin@hilo.example").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean),
   cronSecret: e.CRON_SECRET || "",
-  dataDir: e.HILO_DATA_DIR || ".data",
+  // Default lives under node_modules/.cache: Turbopack does not watch it (a watched dir causes reload loops on every DB write).
+  dataDir: e.HILO_DATA_DIR || "node_modules/.cache/hilo-data",
   siteUrl: e.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   upstashUrl: e.UPSTASH_REDIS_REST_URL || "",
   upstashToken: e.UPSTASH_REDIS_REST_TOKEN || "",

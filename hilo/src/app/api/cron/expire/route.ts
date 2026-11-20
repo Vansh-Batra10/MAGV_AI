@@ -1,5 +1,5 @@
 import { q } from "@/lib/server/db";
-import { cronAuthorized } from "@/lib/server/cron";
+import { cronAuthorized, cronNow } from "@/lib/server/cron";
 import { notifyExpiring } from "@/lib/server/notify";
 import { storage } from "@/lib/server/adapters/storage";
 import type { GiftRow } from "@/lib/server/gifts";
@@ -11,7 +11,7 @@ import { now } from "@/lib/server/env";
  */
 export async function GET(req: Request) {
   if (!cronAuthorized(req)) return new Response("unauthorized", { status: 401 });
-  const t = now();
+  const t = cronNow(req, now());
   const soon = await q<GiftRow>(`select * from gifts where duration='h24' and expires_at_utc between $1 and $1::timestamptz + interval '6 hours' and expiry_reminder_sent=false limit 200`, [t]);
   for (const g of soon) {
     await q(`update gifts set expiry_reminder_sent=true where id=$1`, [g.id]);

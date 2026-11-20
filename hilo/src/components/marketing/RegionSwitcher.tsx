@@ -24,8 +24,8 @@ export function RegionSwitcher({ path }: { path: string }) {
       <label className="text-xs text-lo" htmlFor="currency">{t("currency")}</label>
       <select id="currency" defaultValue="" onChange={(e) => setCur(e.target.value)} className="h-10 rounded-full border border-white/10 bg-white/5 px-3 text-sm text-hi">
         <option value="" className="bg-ink-900">Auto</option>
-        <option value="INR" className="bg-ink-900">₹ INR</option>
-        <option value="USD" className="bg-ink-900">$ USD</option>
+        <option value="INR" className="bg-ink-900">INR</option>
+        <option value="USD" className="bg-ink-900">USD</option>
       </select>
     </div>
   );

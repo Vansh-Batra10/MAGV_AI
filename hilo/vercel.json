@@ -1,0 +1,8 @@
+{
+  "crons": [
+    { "path": "/api/cron/deliver", "schedule": "*/5 * * * *" },
+    { "path": "/api/cron/expire", "schedule": "7 * * * *" },
+    { "path": "/api/cron/reminders", "schedule": "30 3 * * *" },
+    { "path": "/api/cron/unlock", "schedule": "*/15 * * * *" }
+  ]
+}

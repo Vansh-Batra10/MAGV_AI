@@ -175,6 +175,66 @@
       "creditsTitle": "Credits title"
     }
   },
+  "login": {
+    "title": "Sign in karo",
+    "sub": "Hum 6-digit code email karenge. Koi password nahi.",
+    "email": "Email",
+    "send": "Code bhejo",
+    "code": "6-digit code",
+    "verify": "Sign in",
+    "devCode": "Mock mode — tumhara code {code} hai",
+    "wrong": "Code match nahi hua.",
+    "google": "Google sign-in Supabase Auth ke saath aayega."
+  },
+  "dashboard": {
+    "title": "Mere gifts",
+    "hello": "Hi, {email}",
+    "empty": "Abhi koi gift nahi. Pehla do minute ka kaam hai.",
+    "make": "Gift banao",
+    "opens": "{n} baar khula",
+    "notOpened": "Abhi khula nahi",
+    "replies": "Replies",
+    "noReplies": "Abhi koi reply nahi.",
+    "reactions": "Reaction videos",
+    "status": {
+      "draft": "Draft",
+      "paid": "Live",
+      "scheduled": "Scheduled",
+      "delivered": "Deliver ho gaya",
+      "expired": "Expire",
+      "removed": "Hata diya"
+    },
+    "open": "Kholo",
+    "manage": "Manage",
+    "edit": "Edit",
+    "continue": "Jaari rakho",
+    "delete": "Delete",
+    "confirmDelete": "Ye gift hamesha ke liye delete karein? Link band ho jayega.",
+    "reminders": "Zaroori dates",
+    "wallet": "Wallet: {amount}",
+    "referral": "Tumhara referral code: {code}",
+    "signOut": "Sign out",
+    "deleteAccount": "Mera account aur data delete karo",
+    "confirmAccount": "Isse account, saare gifts, replies aur reaction clips delete ho jayenge. Wapas nahi aayega."
+  },
+  "reminders": {
+    "title": "Zaroori dates",
+    "sub": "7 din aur 1 din pehle yaad dilayenge, draft ready ke saath. Default email; WhatsApp sirf opt-in pe.",
+    "person": "Naam",
+    "relation": "Rishta",
+    "occasion": "Occasion",
+    "date": "Date",
+    "channel": "Kaise yaad dilayein",
+    "whatsappOptIn": "WhatsApp (reminder messages ke liye opt-in)",
+    "add": "Date save karo",
+    "empty": "Abhi koi date nahi.",
+    "remove": "Hatao",
+    "occasions": {
+      "birthday": "Birthday",
+      "anniversary": "Anniversary",
+      "other": "Other"
+    }
+  },
   "gallery": {
     "title": "Saare gifts",
     "sub": "Ek chuno, kuch sawaal, free preview.",
@@ -609,5 +669,71 @@
     "accept": "Sab accept",
     "reject": "Sirf zaroori",
     "more": "Privacy policy"
+  },
+  "groupPage": {
+    "eyebrow": "Group gifts",
+    "title": "Poori gang. <em>Ek</em> surprise.",
+    "sub": "Tum shuru karo, ek link share karo, sab message, photo ya voice note daalein — bina sign-up. Midnight pe sab ek saath khulta hai.",
+    "cta": "Group gift shuru karo",
+    "s1": "Ek minute mein shuru",
+    "s1b": "Unka naam, occasion, tumhara note.",
+    "s2": "Group chat mein ek link daalo",
+    "s2b": "Dost kisi bhi phone se apna daalte hain. Tum kuch bhi hide ya edit kar sakte ho.",
+    "s3": "Midnight pe reveal",
+    "s3b": "Taaron bhare corkboard pe polaroids, heart mosaic, aur sabke naam movie credits ki tarah.",
+    "uses": "Birthdays · Farewells · Anniversaries · Mummy-Papa ki anniversary bachchon ki taraf se · Saare cousins ki festival wishes · Office thank-yous",
+    "price": "{price} — 25 log tak · {plus} — 100 log tak"
+  },
+  "ldPage": {
+    "eyebrow": "Long distance",
+    "title": "Alag time zones. <em>Same</em> chaand.",
+    "sub": "Unke liye jo goodnight bolte hain jab doosra good morning.",
+    "f1": "Unke timezone ki midnight",
+    "f1b": "Ek baar schedule karo — unke yahan theek 00:00 pe pahunchega.",
+    "f2": "Do shehron ki ghadi",
+    "f2b": "Laal Dhaaga dono ke live time aur beech ki doori se khulta hai.",
+    "f3": "Open When letters",
+    "f3b": "Bure din, neend na aaye, ladai — sabke liye sealed envelopes. Valentine release ke saath aa rahe hain.",
+    "cta": "Laal Dhaaga banao"
+  },
+  "occasionPage": {
+    "gifts": "{name} gifts",
+    "sub": "Interactive {name} gifts — photos, letters, voice notes. Free preview, sahi pal pe delivery.",
+    "countdown": "{name} {n} din mein",
+    "ideas": "Ideas jo kaam karte hain"
+  },
+  "comingSoon": {
+    "title": "Jaldi aa raha hai",
+    "partners": "Gift shops, bakers aur planners ke liye partner program jaldi khulega. Pehle judna hai? {email} pe likho.",
+    "guides": "Long distance gifts, Open When letters aur sorry bolne pe guides aa rahe hain.",
+    "relation": "{name} ke liye chune hue gifts festival & family release ke saath aa rahe hain.",
+    "back": "Gifts dekho"
+  },
+  "reviewsPage": {
+    "title": "Reviews",
+    "sub": "Sirf asli buyers se, gift ke 3 din baad. Kabhi edit nahi, kabhi banaya nahi.",
+    "empty": "Hum naye hain, isliye abhi koi review nahi — aur hum fake nahi karenge. Pehle banne wale bano."
+  },
+  "about": {
+    "title": "{brand} kyun banaya",
+    "p1": "Kuch baatein text mein nahi aati. 12,000 km door se midnight birthday. Ek sorry jise do shabdon se zyada chahiye. Bees dost jo ek saath kuch kehna chahte hain.",
+    "p2": "{brand} unhe chhoti, cinematic duniya bana deta hai jo kisi bhi phone pe khulti hai. Hum teen cheezon ki parwah karte hain: film jaisa lage, do minute lage, aur private aur honest rahe — koi fake discount, fake review ya dark pattern nahi.",
+    "p3": "Naam ka matlab hai 'dhaaga' — wo laal dhaaga jo logon ko jodta hai, chahe kitni bhi doori ho."
+  },
+  "contact": {
+    "title": "Insaan se baat karo",
+    "sub": "Aam taur pe kuch ghanton mein reply karte hain.",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "grievance": "Grievance officer",
+    "address": "Registered address"
+  },
+  "notFound": {
+    "title": "Ye page kho gaya…",
+    "sub": "…jaise tumhara charger 🔌. Chalo ghar chalte hain.",
+    "home": "Ghar le chalo",
+    "error": "Kuch toot gaya",
+    "errorSub": "Tumhari galti nahi. Phir try karo — drafts safe hain.",
+    "retry": "Phir try karo"
   }
 }

@@ -6,7 +6,7 @@ import { track } from "@/lib/server/events";
 
 const Body = z.object({
   templateSlug: z.string().max(60),
-  content: z.unknown(),
+  content: z.unknown().optional(),
   giftLanguage: z.enum(["en", "hi-Latn", "hi"]),
   createdVia: z.enum(["questions", "form"]).default("questions"),
 });
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   if (!b.ok) return b.res;
   if (!getTemplate(b.data.templateSlug)) return err("unknown_template", 404);
   const v = await visitor();
-  const id = await createDraft({ ...b.data, market: v.market, bucket: v.bucket, utm: v.utm });
+  const id = await createDraft({ ...b.data, content: b.data.content ?? null, market: v.market, bucket: v.bucket, utm: v.utm });
   await track("creator_started", { anonId: v.anonId, giftId: id, props: { template: b.data.templateSlug, via: b.data.createdVia } });
   return json({ id });
 }

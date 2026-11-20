@@ -1,5 +1,5 @@
 import { q } from "@/lib/server/db";
-import { cronAuthorized } from "@/lib/server/cron";
+import { cronAuthorized, cronNow } from "@/lib/server/cron";
 import { send, pickChannel } from "@/lib/server/adapters/messaging";
 import { now } from "@/lib/server/env";
 import { SITE_URL } from "@/config/brand";
@@ -8,7 +8,7 @@ import { suggestedTemplate } from "@/lib/reminders";
 /** Daily 09:00 IST: reminders 7 days and 1 day before saved dates (email by default; WhatsApp only with opt-in). */
 export async function GET(req: Request) {
   if (!cronAuthorized(req)) return new Response("unauthorized", { status: 401 });
-  const t = now();
+  const t = cronNow(req, now());
   const rows = await q<{ id: string; person_name: string; relation: string | null; occasion: string; month: number; day: number; channel: string; last_sent_for_year: number | null; last_sent_kind: string | null; email: string; phone: string | null; market: "IN" | "GLOBAL" }>(
     `select r.*, p.email, p.phone, p.market from reminders r join profiles p on p.id=r.user_id`);
   let sent = 0;

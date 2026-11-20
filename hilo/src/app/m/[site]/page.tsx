@@ -18,6 +18,8 @@ import { Section, SectionHead } from "@/components/marketing/Section";
 import { GalleryGrid } from "@/components/marketing/GalleryGrid";
 import { OccasionStrip, TryIt, LongDistanceGlobe, HowItWorks, PricingToggle, Faq, ModesVisual } from "@/components/marketing/home/Interactive";
 import { siteMetadata } from "@/lib/seo";
+import { trackServer } from "@/lib/server/trackServer";
+import { JsonLd, organization, faqPage } from "@/components/marketing/JsonLd";
 
 export async function generateMetadata({ params }: { params: Promise<{ site: string }> }): Promise<Metadata> {
   const { site } = await params;
@@ -49,14 +51,17 @@ export default async function Home({ params, searchParams }: { params: Promise<{
     slug: u.occasion.slug, name: u.occasion.name[locale], emoji: u.occasion.emoji, glow: u.occasion.glow, art: u.occasion.art, days: u.days, landing: u.occasion.landing && u.occasion.release <= RELEASE,
   }));
   const currency = await siteCurrency(site);
-  const items = galleryItems(site, currency, (p) => tg("from", { price: p }), tg("free"));
+  const items = await galleryItems(site, currency, (p) => tg("from", { price: p }), tg("free"));
   const india = market === "IN";
   const trust = india ? [t("trustRow.noApp"), t("trustRow.preview"), t("trustRow.upi"), t("trustRow.india")] : [t("trustRow.noApp"), t("trustRow.preview"), t("trustRow.private"), t("trustRow.secure")];
   const faq = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ q: t(`faq.q${n}`), a: t(`faq.a${n}`) }));
   const P = PRICES[currency];
+  await trackServer("landing_view", { site, season: takeover?.occasion.slug ?? null });
 
   return (
     <main data-glow={glow}>
+      <JsonLd data={organization} />
+      <JsonLd data={faqPage(faq)} />
       {/* 2. Hero */}
       <section className="relative flex min-h-[100dvh] items-center overflow-hidden pb-16 pt-28 md:pt-24">
         <div className="absolute inset-0 [background:var(--grad-aurora)]" />

@@ -1,5 +1,5 @@
 import { q } from "@/lib/server/db";
-import { cronAuthorized } from "@/lib/server/cron";
+import { cronAuthorized, cronNow } from "@/lib/server/cron";
 import { deliverToRecipient } from "@/lib/server/notify";
 import { send, pickChannel } from "@/lib/server/adapters/messaging";
 import { giftUrl, type GiftRow } from "@/lib/server/gifts";
@@ -9,7 +9,7 @@ import { log } from "@/lib/server/log";
 /** Every 5 minutes: deliver scheduled gifts and reveal group gifts whose time has come. */
 export async function GET(req: Request) {
   if (!cronAuthorized(req)) return new Response("unauthorized", { status: 401 });
-  const t = now();
+  const t = cronNow(req, now());
   const due = await q<GiftRow>(`select * from gifts where status in ('scheduled','paid') and deliver_at_utc is not null and deliver_at_utc <= $1 and delivered_at is null and takedown_status='none' limit 200`, [t]);
   let delivered = 0;
   for (const g of due) {

@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { q } from "./db";
 import { SITES, type SiteKey, type Currency } from "@/config/markets";
 import { PRICES, formatMoney, durationsFor } from "@/config/pricing";
 import { liveTemplates } from "@/templates/registry";
@@ -19,9 +20,14 @@ export function fromPrice(tier: string, currency: Currency): number | null {
   return vals.length ? Math.min(...vals) : null;
 }
 
-export function galleryItems(site: SiteKey, currency: Currency, tFrom: (p: string) => string, freeLabel: string): GalleryItem[] {
+export async function galleryItems(site: SiteKey, currency: Currency, tFrom: (p: string) => string, freeLabel: string): Promise<GalleryItem[]> {
   const market = SITES[site].market;
+  let off = new Set<string>();
+  try {
+    off = new Set((await q<{ slug: string }>(`select slug from template_flags where enabled=false`)).map((r) => r.slug));
+  } catch {}
   return liveTemplates()
+    .filter((t) => !off.has(t.meta.slug))
     .filter((t) => market === "IN" || t.meta.occasion.some((o) => OCCASIONS.find((x) => x.slug === o)?.markets.includes("GLOBAL")))
     .map((t) => {
       const p = fromPrice(t.meta.tier, currency);

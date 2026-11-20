@@ -8,3 +8,5 @@ next-env.d.ts
 test-results/
 playwright-report/
 marketing/reels/*.webm
+.data-e2e/
+tsconfig.tsbuildinfo

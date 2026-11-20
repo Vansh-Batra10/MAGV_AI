@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Contribution, TemplateDef } from "../types";
-import { by, DEMO, L, name, Q, url } from "../common";
+import { by, DEMO, L, name, url } from "../common";
 
 export const schema = z.object({
   recipientName: name(),
@@ -18,7 +18,7 @@ export function sampleContributions(lang: "en" | "hi-Latn" | "hi"): Contribution
   const msgs = by(lang, {
     en: [
       ["Kabir", "Happy birthday to the only person who replies to memes with essays. Never change.", DEMO.friends],
-      ["Ananya", "You held my hand through the worst semester of my life. I owe you forever (and ₹400).", null],
+      ["Ananya", "You held my hand through the worst semester of my life. I owe you forever (and twenty coffees).", null],
       ["Rohan", "Best travel partner, worst map reader. Here's to more wrong turns together!", DEMO.mountain],
       ["Sara", "Thank you for being the friend who shows up. Every. Single. Time. 💛", null],
       ["Dev", "Remember the cake disaster of 2024? Still the best birthday. Love you, idiot.", DEMO.cake],

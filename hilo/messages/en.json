@@ -175,6 +175,66 @@
       "creditsTitle": "Credits title"
     }
   },
+  "login": {
+    "title": "Sign in",
+    "sub": "We'll email you a 6-digit code. No passwords.",
+    "email": "Email",
+    "send": "Send code",
+    "code": "6-digit code",
+    "verify": "Sign in",
+    "devCode": "Mock mode — your code is {code}",
+    "wrong": "That code didn't match.",
+    "google": "Google sign-in arrives with the Supabase Auth switch."
+  },
+  "dashboard": {
+    "title": "My gifts",
+    "hello": "Hi, {email}",
+    "empty": "No gifts yet. Your first one takes two minutes.",
+    "make": "Make a gift",
+    "opens": "{n} opens",
+    "notOpened": "Not opened yet",
+    "replies": "Replies",
+    "noReplies": "No replies yet.",
+    "reactions": "Reaction videos",
+    "status": {
+      "draft": "Draft",
+      "paid": "Live",
+      "scheduled": "Scheduled",
+      "delivered": "Delivered",
+      "expired": "Faded",
+      "removed": "Removed"
+    },
+    "open": "Open",
+    "manage": "Manage",
+    "edit": "Edit",
+    "continue": "Continue",
+    "delete": "Delete",
+    "confirmDelete": "Delete this gift for good? The link will stop working.",
+    "reminders": "Important dates",
+    "wallet": "Wallet: {amount}",
+    "referral": "Your referral code: {code}",
+    "signOut": "Sign out",
+    "deleteAccount": "Delete my account & data",
+    "confirmAccount": "This deletes your account, all your gifts, replies and reaction clips. It can't be undone."
+  },
+  "reminders": {
+    "title": "Important dates",
+    "sub": "We remind you 7 days and 1 day before, with a draft ready. Email by default; WhatsApp only if you opt in.",
+    "person": "Name",
+    "relation": "Relation",
+    "occasion": "Occasion",
+    "date": "Date",
+    "channel": "Remind me by",
+    "whatsappOptIn": "WhatsApp (I opt in to reminder messages)",
+    "add": "Save date",
+    "empty": "No dates yet.",
+    "remove": "Remove",
+    "occasions": {
+      "birthday": "Birthday",
+      "anniversary": "Anniversary",
+      "other": "Other"
+    }
+  },
   "gallery": {
     "title": "Every gift",
     "sub": "Pick one, answer a few questions, preview it free.",
@@ -609,5 +669,71 @@
     "accept": "Accept all",
     "reject": "Essential only",
     "more": "Privacy policy"
+  },
+  "groupPage": {
+    "eyebrow": "Group gifts",
+    "title": "The whole gang. <em>One</em> surprise.",
+    "sub": "You start it, share one link, everyone adds a message, photo or voice note — no sign-up. At midnight, it all opens together.",
+    "cta": "Start a group gift",
+    "s1": "Start it in a minute",
+    "s1b": "Their name, the occasion, your own note.",
+    "s2": "Drop one link in the group chat",
+    "s2b": "Friends add theirs from any phone. You can hide or edit anything.",
+    "s3": "Reveal at midnight",
+    "s3b": "Polaroids on a starry corkboard, a heart mosaic, and everyone's names rolling like movie credits.",
+    "uses": "Birthdays · Farewells · Anniversaries · Parents' anniversary from the kids · Festival wishes from all the cousins · Office thank-yous",
+    "price": "{price} for up to 25 people · {plus} for up to 100"
+  },
+  "ldPage": {
+    "eyebrow": "Long distance",
+    "title": "Different time zones. <em>Same</em> moon.",
+    "sub": "For the ones who say goodnight while the other says good morning.",
+    "f1": "Midnight in their timezone",
+    "f1b": "Schedule it once — we deliver at exactly 00:00 where they are.",
+    "f2": "Two-city clocks",
+    "f2b": "Red Thread opens with both your times, live, and the distance between you.",
+    "f3": "Open When letters",
+    "f3b": "Sealed envelopes for bad days, sleepless nights and fights. Arriving with our Valentine's release.",
+    "cta": "Make a Red Thread gift"
+  },
+  "occasionPage": {
+    "gifts": "{name} gifts",
+    "sub": "Interactive {name} gifts — photos, letters and voice notes, previewed free and delivered at the perfect moment.",
+    "countdown": "{name} is in {n} days",
+    "ideas": "Ideas that work"
+  },
+  "comingSoon": {
+    "title": "Coming soon",
+    "partners": "Our partner program for gift shops, bakers and planners opens soon. Want in early? Write to {email}.",
+    "guides": "Guides on long distance gifts, Open When letters and saying sorry are on the way.",
+    "relation": "Gifts picked for {name} are on the way with our festival & family release.",
+    "back": "Browse gifts"
+  },
+  "reviewsPage": {
+    "title": "Reviews",
+    "sub": "Only from real buyers, collected 3 days after their gift. Never edited, never invented.",
+    "empty": "We're new, so there aren't any yet — and we won't fake them. Be one of the first."
+  },
+  "about": {
+    "title": "Why we made {brand}",
+    "p1": "Some things don't fit in a text. A birthday at midnight from 12,000 km away. A sorry that needs more than two words. Twenty friends who all want to say the same thing at once.",
+    "p2": "{brand} turns them into tiny, cinematic worlds that open on any phone. We care about three things: making it feel like a film, making it take two minutes, and keeping it private and honest — no fake discounts, no fake reviews, no dark patterns.",
+    "p3": "The name means 'thread' — the red thread that ties people together, however far apart."
+  },
+  "contact": {
+    "title": "Talk to a human",
+    "sub": "We usually reply within a few hours.",
+    "whatsapp": "WhatsApp",
+    "email": "Email",
+    "grievance": "Grievance officer",
+    "address": "Registered address"
+  },
+  "notFound": {
+    "title": "This page got lost…",
+    "sub": "…like your charger 🔌. Let's get you home.",
+    "home": "Take me home",
+    "error": "Something broke",
+    "errorSub": "Not your fault. Try again — your drafts are safe.",
+    "retry": "Try again"
   }
 }

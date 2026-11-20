@@ -13,10 +13,11 @@ import { sound } from "@/lib/client/sound";
 import { uploadBlob } from "@/lib/client/upload";
 import { cn } from "@/lib/cn";
 import { initials } from "./util";
+import confettiLib from "canvas-confetti";
+import { ReactionCapture } from "./Reaction";
 
 export async function confetti(opts: { colors?: string[]; particleCount?: number; spread?: number; origin?: { x: number; y: number }; shapes?: ("circle" | "square")[] } = {}) {
-  const c = (await import("canvas-confetti")).default;
-  c({ particleCount: opts.particleCount ?? 110, spread: opts.spread ?? 80, startVelocity: 42, origin: opts.origin ?? { x: 0.5, y: 0.6 }, colors: opts.colors ?? ["#FF4D7E", "#FFC870", "#C9B6FF", "#FFF8EF", "#FF8A65"], ticks: 220, scalar: 0.9, disableForReducedMotion: true });
+  confettiLib({ particleCount: opts.particleCount ?? 110, spread: opts.spread ?? 80, startVelocity: 42, origin: opts.origin ?? { x: 0.5, y: 0.6 }, colors: opts.colors ?? ["#FF4D7E", "#FFC870", "#C9B6FF", "#FFF8EF", "#FF8A65"], ticks: 220, scalar: 0.9, disableForReducedMotion: true });
 }
 
 export function heartBurst(container: HTMLElement | null, n = 14) {
@@ -244,12 +245,13 @@ export function ReplyCard({ ctx, mode, title, children, extra }: { ctx: GiftCont
         )}
       </div>
       {extra}
+      <ReactionCapture ctx={ctx} mode={mode} />
       {ctx.is24h && (
         <a href={ctx.slug ? `/g/${ctx.slug}/keep` : "#"} onClick={(e) => (mode !== "live" ? e.preventDefault() : undefined)} className="inline-flex h-12 items-center gap-2 rounded-full px-6 text-[15px] font-semibold text-white [background:var(--grad-kiss)] shadow-[0_10px_30px_-8px_rgba(255,77,126,0.7)]">
           <Sparkles size={16} /> {t("keepForever")}
         </a>
       )}
-      <a href={mode === "live" ? `/gifts?ref=gift&utm_source=gift&utm_medium=footer` : "#"} onClick={(e) => (mode !== "live" ? e.preventDefault() : undefined)} className="text-[13px] text-white/50 underline-offset-4 hover:text-white/80 hover:underline">
+      <a href={mode === "live" ? `/gifts?utm_source=gift&utm_medium=footer` : "#"} onClick={(e) => { if (mode !== "live") return e.preventDefault(); void fetch("/api/events", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "recipient_clicked_make_own", giftId: ctx.giftId }), keepalive: true }); }} className="text-[13px] text-white/50 underline-offset-4 hover:text-white/80 hover:underline">
         {ctx.isFree ? t("makeOne") : t("madeWith", { brand: BRAND.name })}
       </a>
     </div>

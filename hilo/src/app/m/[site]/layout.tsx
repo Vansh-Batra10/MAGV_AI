@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { isSiteKey, SITES, SITE_KEYS } from "@/config/markets";
+import { isSiteKey, SITES } from "@/config/markets";
 import { loadMessages } from "@/i18n/request";
 import { SiteProvider } from "@/components/marketing/SiteContext";
 import { Nav } from "@/components/marketing/Nav";
@@ -10,10 +10,6 @@ import { Footer } from "@/components/marketing/Footer";
 import { ConsentBanner } from "@/components/marketing/Consent";
 import { CursorThread } from "@/components/ui/CursorThread";
 import { SmoothScroll } from "@/components/marketing/SmoothScroll";
-
-export function generateStaticParams() {
-  return SITE_KEYS.map((site) => ({ site }));
-}
 
 export default async function SiteLayout({ children, params }: { children: React.ReactNode; params: Promise<{ site: string }> }) {
   const { site } = await params;

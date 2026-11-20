@@ -25,7 +25,7 @@ import { haptic } from "@/lib/client/haptics";
 
 type GiftMsgs = Record<GiftLanguage, Record<string, unknown>>;
 
-export function Creator({ slug, initialLang, giftMessages, initialName, startInForm, resumeId }: { slug: string; initialLang: GiftLanguage; giftMessages: GiftMsgs; initialName?: string; startInForm?: boolean; resumeId?: string }) {
+export function Creator({ slug, initialLang, giftMessages, initialName, initialSender, startInForm, resumeId }: { slug: string; initialLang: GiftLanguage; giftMessages: GiftMsgs; initialName?: string; initialSender?: string; startInForm?: boolean; resumeId?: string }) {
   const t = useTranslations("creator");
   const router = useRouter();
   const tpl = getTemplate(slug)!;
@@ -34,9 +34,9 @@ export function Creator({ slug, initialLang, giftMessages, initialName, startInF
   const [lang, setLang] = useState<GiftLanguage>(initialLang);
   const [content, setContent] = useState<any>(() => {
     const d = tpl.defaults(initialLang);
-    return initialName ? { ...d, recipientName: initialName } : d;
+    return { ...d, ...(initialName ? { recipientName: initialName } : {}), ...(initialSender ? { senderName: initialSender } : {}) };
   });
-  const [answered, setAnswered] = useState<Set<string>>(() => new Set(initialName ? ["recipientName"] : []));
+  const [answered, setAnswered] = useState<Set<string>>(() => new Set([...(initialName ? ["recipientName"] : []), ...(initialSender ? ["senderName"] : [])]));
   const [step, setStep] = useState(0);
   const [view, setView] = useState<"questions" | "writing" | "preview" | "form">(startInForm ? "form" : "questions");
   const [giftId, setGiftId] = useState<string | null>(resumeId ?? null);
@@ -164,6 +164,17 @@ export function Creator({ slug, initialLang, giftMessages, initialName, startInF
     else void finish();
   };
 
+  /** Skipping an optional question clears the demo value so it never ships in a real gift. */
+  const skip = () => {
+    if (q) {
+      const cur = getPath(content, q.field);
+      const empty = Array.isArray(cur) ? [] : typeof cur === "number" ? "" : q.kind === "song" ? "" : "";
+      setField(q.kind === "song" ? q.field : q.field, empty);
+      if (q.kind === "song") setField(q.field.replace(/\.url$/, ".title"), "");
+    }
+    next();
+  };
+
   const send = async () => {
     const id = (await saveNow(content, lang)) ?? giftId;
     if (id) router.push(tpl.meta.mode === "group" ? `/group/${id}/manage` : `/checkout/${id}`);
@@ -173,7 +184,8 @@ export function Creator({ slug, initialLang, giftMessages, initialName, startInF
     if (!q) return true;
     const v = getPath(content, q.field);
     if (q.optional) return true;
-    if (q.kind === "photos") return answered.has(q.field) ? (Array.isArray(v) ? v.length > 0 : !!v) : true;
+    // Required photo steps need a real upload — demo art must never ship in someone's gift.
+    if (q.kind === "photos") return answered.has(q.field) && (Array.isArray(v) ? v.length > 0 : !!v);
     if (q.kind === "text" || q.kind === "textarea") return typeof v === "string" && v.trim().length > 0 && answered.has(q.field);
     return true;
   }, [q, content, answered]);
@@ -254,7 +266,7 @@ export function Creator({ slug, initialLang, giftMessages, initialName, startInF
                     <button type="button" onClick={next} disabled={!canNext} className="flex h-14 flex-1 items-center justify-center gap-2 rounded-full text-[16px] font-semibold text-white [background:var(--grad-kiss)] shadow-[0_10px_30px_-8px_rgba(255,77,126,0.6)] disabled:opacity-40">
                       {step === tpl.questions.length - 1 ? <><Sparkles size={18} /> {t("fullPreview")}</> : <>{t("next")} <ArrowRight size={18} /></>}
                     </button>
-                    {q.optional && <button type="button" onClick={next} className="h-14 px-3 text-[15px] text-mid underline-offset-4 hover:underline">{t("skip")}</button>}
+                    {q.optional && <button type="button" onClick={skip} className="h-14 px-3 text-[15px] text-mid underline-offset-4 hover:underline">{t("skip")}</button>}
                   </div>
                 </>
               )}

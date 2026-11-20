@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import type { RendererProps } from "../types";
 import type { Content } from "./def";
