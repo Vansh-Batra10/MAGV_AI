@@ -26,7 +26,7 @@ export async function couponDiscount(code: string | null | undefined, currency: 
 }
 
 /** Server-side price computation. Never trust client prices. */
-export async function quote(input: { gift: GiftRow; currency: Currency; tier?: Tier; duration: Duration; addons?: AddonKey[]; coupon?: string | null; walletMinor?: number; purpose?: "purchase" | "upgrade"; bucket?: string | null }): Promise<Quote> {
+export async function quote(input: { gift: GiftRow; currency: Currency; tier?: Tier; duration: Duration; addons?: AddonKey[]; coupon?: string | null; walletMinor?: number; purpose?: "purchase" | "upgrade"; bucket?: string | null; referralCode?: string | null; buyerEmail?: string | null }): Promise<Quote> {
   const purpose = input.purpose ?? "purchase";
   const tier = input.tier ?? input.gift.tier;
   let base: number;
@@ -41,7 +41,16 @@ export async function quote(input: { gift: GiftRow; currency: Currency; tier?: T
   }
   const addons = (input.addons ?? []).filter((k) => k in ADDONS && k !== "password").map((key) => ({ key, amount: ADDONS[key][input.currency] }));
   const subtotal = base + addons.reduce((s, a) => s + a.amount, 0);
-  const { off: couponOff, error: couponError } = await couponDiscount(input.coupon, input.currency, subtotal);
+  let { off: couponOff, error: couponError } = await couponDiscount(input.coupon, input.currency, subtotal);
+  // Referral: a friend's code gives a fixed amount off the first paid gift (when no coupon is used).
+  if (!couponOff && input.referralCode && input.referralCode !== "gift" && purpose === "purchase") {
+    const ref = await one<{ id: string; email: string }>(`select id, email from profiles where referral_code=$1`, [input.referralCode.toUpperCase()]);
+    const prior = input.buyerEmail ? await one(`select 1 from orders where lower(buyer_email)=lower($1) and status='paid' limit 1`, [input.buyerEmail]) : null;
+    if (ref && !prior && ref.email !== input.buyerEmail?.toLowerCase()) {
+      couponOff = Math.min(subtotal, REFERRAL.refereeOffMinor[input.currency]);
+      couponError = undefined;
+    }
+  }
   const afterCoupon = Math.max(0, subtotal - couponOff);
   const walletUsed = Math.min(afterCoupon, Math.max(0, input.walletMinor ?? 0));
   return { currency: input.currency, tier: purpose === "upgrade" ? input.gift.tier : tier, duration, base, addons, couponOff, walletUsed, total: afterCoupon - walletUsed, purpose, couponError };

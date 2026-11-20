@@ -37,7 +37,7 @@ export async function POST(req: Request) {
   if (d.purpose === "purchase" && !durationsFor(gift.tier).includes(d.duration)) return err("duration_not_available", 400);
   const currency = d.currency ?? v.currency;
   const profile = await getProfile();
-  const qt = await quote({ gift, currency, duration: d.duration, addons: d.addons, coupon: d.coupon, walletMinor: d.useWallet && profile && profile.currency === currency ? profile.wallet_balance_minor : 0, purpose: d.purpose, bucket: gift.experiment_bucket ?? v.bucket });
+  const qt = await quote({ gift, currency, duration: d.duration, addons: d.addons, coupon: d.coupon, walletMinor: d.useWallet && profile && profile.currency === currency ? profile.wallet_balance_minor : 0, purpose: d.purpose, bucket: gift.experiment_bucket ?? v.bucket, referralCode: v.utm?.ref ?? null, buyerEmail: d.email });
   if (d.quoteOnly) return json({ quote: qt });
   if (!d.consent) return err("consent_required", 400);
   await recordConsent("buyer", d.email.toLowerCase(), "purchase_and_delivery", true);
