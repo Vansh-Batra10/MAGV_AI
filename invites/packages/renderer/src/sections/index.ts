@@ -16,6 +16,10 @@ export interface SectionHooks {
   onShagunBlock?: (el: HTMLElement) => Promise<void> | void;
   /** Called after an RSVP is saved (e.g. Mohar's box closes). */
   onRsvpSaved?: () => void;
+  /** Template content placed just before the footer (e.g. Rang Kahani's back cover). */
+  beforeFooter?: (host: HTMLElement) => void;
+  /** Extra fields appended to the RSVP section after the form (e.g. Mohar's Ashirwad). */
+  afterRsvp?: (host: HTMLElement) => void;
 }
 
 export function eventTitle(ctx: RenderContext, e: WeddingEvent): { main: string; alt?: string } {
@@ -160,6 +164,7 @@ export function renderSections(ctx: RenderContext, host: HTMLElement, hooks: Sec
   const rsvpSec = h("section", { class: "inv-sec", id: "inv-rsvp" }, h("h2", { text: t("rsvpTitle") }));
   const stage = hooks.rsvpStage?.(rsvpSec) || undefined;
   rsvpSec.append(buildRsvpForm(ctx, events, (status) => { stage?.react(status); hooks.onRsvpSaved?.(); }));
+  hooks.afterRsvp?.(rsvpSec);
   wrap.append(rsvpSec);
   observeOnce(rsvpSec, () => ctx.emit("rsvpOpen"), cleanups);
 
@@ -171,6 +176,7 @@ export function renderSections(ctx: RenderContext, host: HTMLElement, hooks: Sec
   }
 
   // 9. Footer
+  if (hooks.beforeFooter) { const b = h("div", { class: "inv-before-footer" }); hooks.beforeFooter(b); wrap.append(b); }
   wrap.append(buildFooter(ctx));
   host.append(wrap);
   return { destroy: () => { cleanups.forEach((c) => c()); wrap.remove(); } };

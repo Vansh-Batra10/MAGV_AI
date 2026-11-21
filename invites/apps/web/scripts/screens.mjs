@@ -43,7 +43,7 @@ for (const pack of packs.length ? packs : [""]) for (const preset of presets) fo
     await shot(page, `${tag}-t${k}`);
   }
   if (chambers) {
-    const ids = await page.$$eval(".sm-chamber, .rk-spread, .mh-card-slot", (els) => els.map((e) => e.id).filter(Boolean));
+    const ids = await page.$$eval(".sm-chamber, .rk-fn, .mh-fn", (els) => els.map((e) => e.id).filter(Boolean));
     for (const id of ids) {
       await page.evaluate((id) => { const el = document.getElementById(id); window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY); }, id);
       await page.waitForTimeout(400);

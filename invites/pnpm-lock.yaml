@@ -41,6 +41,12 @@ importers:
       '@invites/renderer':
         specifier: workspace:*
         version: link:../../packages/renderer
+      '@invites/template-mohar':
+        specifier: workspace:*
+        version: link:../../packages/templates/mohar
+      '@invites/template-rang-kahani':
+        specifier: workspace:*
+        version: link:../../packages/templates/rang-kahani
       '@invites/template-sheesh-mahal':
         specifier: workspace:*
         version: link:../../packages/templates/sheesh-mahal
@@ -126,6 +132,36 @@ importers:
       happy-dom:
         specifier: 20.0.10
         version: 20.0.10
+
+  packages/templates/mohar:
+    dependencies:
+      '@invites/content-schema':
+        specifier: workspace:*
+        version: link:../../content-schema
+      '@invites/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@invites/renderer':
+        specifier: workspace:*
+        version: link:../../renderer
+      gsap:
+        specifier: 3.13.0
+        version: 3.13.0
+
+  packages/templates/rang-kahani:
+    dependencies:
+      '@invites/content-schema':
+        specifier: workspace:*
+        version: link:../../content-schema
+      '@invites/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@invites/renderer':
+        specifier: workspace:*
+        version: link:../../renderer
+      gsap:
+        specifier: 3.13.0
+        version: 3.13.0
 
   packages/templates/sheesh-mahal:
     dependencies:

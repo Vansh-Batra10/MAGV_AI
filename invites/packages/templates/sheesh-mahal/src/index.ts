@@ -96,7 +96,7 @@ function create(ctx: RenderContext): TemplateInstance {
   const hero = h("div", { class: "sm-hero" });
   const motifs = content.motifs.filter((m) => m !== "none");
   const motifBox = h("div", { class: "sm-motifs", html: motifs.map((m) => `<div class="sm-motif">${motifSvg(m, { strokeWidth: m === "ganesh" ? 2.6 : 1.4 })}</div>`).join("") });
-  const wording = fillWording(wordingFor(content.ceremonyStyle, ctx.tone === "playful" && guest.tone !== "playful" ? "warm" : ctx.tone, ctx.locale), { bride: content.bride.name, groom: content.groom.name });
+  const wording = fillWording(wordingFor(content.ceremonyStyle, ctx.tone === "playful" && guest.tone !== "playful" ? "warm" : ctx.tone, ctx.locale), { bride: (ctx.locale === "hi" && content.bride.nameHi) || content.bride.name, groom: (ctx.locale === "hi" && content.groom.nameHi) || content.groom.name });
   const invocation = h("p", { class: "sm-invocation", text: wording.invocation ?? (content.motifs[0] === "ganesh" ? t("invocationGanesh") : "") });
   const blessing = h("p", { class: "sm-blessing", text: t("blessing") });
   if (content.families.blessingLine && ctx.locale !== "hi" && ctx.tone !== "playful") blessing.prepend(h("span", { class: "sm-family-line", text: content.families.blessingLine }), h("br"));

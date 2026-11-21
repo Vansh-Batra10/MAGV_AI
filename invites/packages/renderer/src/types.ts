@@ -59,6 +59,11 @@ export interface GuestServices {
   claimGift(giftId: string): Promise<{ ok: boolean }>;
   track(e: { scene: string; tier?: Tier }): void;
   report?(reason: string): Promise<void>;
+  /** Rang Kahani extras (aggregate counts only are ever shown to guests). */
+  vote?(team: "ladkewale" | "ladkiwale"): Promise<{ ok: boolean; counts?: { ladkewale: number; ladkiwale: number } }>;
+  requestSong?(text: string): Promise<{ ok: boolean }>;
+  /** Mohar Ashirwad Book entry. */
+  sign?(p: { blessing: string; signatureSvg?: string }): Promise<{ ok: boolean }>;
   existingRsvp?: RsvpSubmission | null;
   /** Aggregate, privacy-safe numbers for playful UI (never names). */
   publicCounts?: { confirmedHouseholds: number; teamLadkewale?: number; teamLadkiwale?: number };

@@ -22,7 +22,9 @@
     "@invites/template-sheesh-mahal": "workspace:*",
     "next": "15.5.29",
     "react": "19.1.10",
-    "react-dom": "19.1.10"
+    "react-dom": "19.1.10",
+    "@invites/template-rang-kahani": "workspace:*",
+    "@invites/template-mohar": "workspace:*"
   },
   "devDependencies": {
     "@fontsource/baloo-2": "5.2.7",
