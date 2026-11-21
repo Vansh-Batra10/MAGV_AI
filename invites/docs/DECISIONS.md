@@ -30,3 +30,10 @@ Format: date — decision. Options considered. Reason.
 - **Open tracking is posted by the client after the loader** (not counted on server render), so link-preview bots and prefetchers don't mark invites as opened.
 - **Mock store = JSON file with RLS-equivalent checks** (`packages/db/src/store.ts`); SQL migrations with RLS policies live in `packages/db/migrations` for Supabase. Store tests prove isolation between weddings.
 - **Public link mode** creates a named guest record from "Aapka naam?" (rate-limited to 5 per minute per IP) and redirects to that personal link, so RSVPs are attributed.
+
+### M6
+- **Platform UI uses one hand-written stylesheet (`app/studio/studio.css`) instead of Tailwind.** Tailwind is allowed only for platform UI, not required; a ~100-line stylesheet keeps the build simpler and the guest route untouched.
+- **Auth: phone OTP with httpOnly session cookies.** MOCK mode shows the code on screen; real mode plugs Supabase phone auth / an SMS provider into `issueOtp`. A verified phone at login satisfies the "OTP before shagun" rule; VPA changes lock for 24 h.
+- **Payments: MOCK grants the tier instantly; real mode creates a Razorpay order and only the HMAC-verified webhook (`/api/pay/razorpay`) grants the tier.** RevenueCat (app) will write to the same `orders/entitlements` model.
+- **Exports from the studio are CSV (UTF-8 BOM, formula-injection safe) that open in Excel.** True XLSX would need a new dependency; CSV meets the caterer and guest-list needs. Recorded as a deviation from "XLSX export".
+- **Editor "advanced" tab edits the full content JSON, validated by the same Zod schema server-side.** Structured forms cover names, functions, dress codes, updates, guests, shagun; the JSON editor covers the long tail (FAQ, stay, wording) until dedicated forms exist.
