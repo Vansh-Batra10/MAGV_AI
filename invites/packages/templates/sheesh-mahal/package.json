@@ -1,0 +1,14 @@
+{
+  "name": "@invites/template-sheesh-mahal",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p .", "test": "vitest run --passWithNoTests" },
+  "dependencies": {
+    "@invites/content-schema": "workspace:*",
+    "@invites/i18n": "workspace:*",
+    "@invites/renderer": "workspace:*",
+    "gsap": "3.13.0"
+  }
+}
