@@ -1,0 +1,2 @@
+STYLE (pack: Bombay Monsoon): flat paper cut-out illustration, soft-line portraits, saturated rani pink #E0218A, indigo #2E2A7A, turmeric #F4B400, bottle green #0E5E4B, paper texture, thin white cut edges, gentle drop shadow, Indian truck-art border details.
+CONSTRAINTS: no text or letters, no logos or brand marks (taxis carry no branding), no watermark, no celebrity likeness, no religious symbols.

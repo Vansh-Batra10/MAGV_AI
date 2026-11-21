@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "Nimantran",
+    "slug": "nimantran",
+    "scheme": "nimantran",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": { "bundleIdentifier": "example.nimantran.app", "infoPlist": { "NSContactsUsageDescription": "Pick guests from your contacts to send them their invitation." } },
+    "android": { "package": "example.nimantran.app", "permissions": ["READ_CONTACTS"] },
+    "plugins": ["expo-router", "expo-secure-store", "expo-notifications", ["expo-contacts", { "contactsPermission": "Pick guests from your contacts to send them their invitation." }]],
+    "extra": { "apiUrl": "http://10.0.2.2:3000" }
+  }
+}

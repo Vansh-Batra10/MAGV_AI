@@ -1,0 +1,16 @@
+# Maestro smoke test (run on an emulator with the web app reachable at app.json extra.apiUrl, MOCK_MODE=true)
+appId: example.nimantran.app
+---
+- launchApp
+- tapOn: { id: "phone" }
+- inputText: "+919800000000"
+- tapOn: { id: "submit" }
+- assertVisible: "Mock mode code: .*"
+- copyTextFrom: { text: "Mock mode code: .*" }
+- tapOn: { id: "code" }
+- pasteText
+- tapOn: { id: "submit" }
+- assertVisible: "Your invites"
+- tapOn: "Ananya & Rohan"
+- tapOn: "Dashboard"
+- assertVisible: "guests"

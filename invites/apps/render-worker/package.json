@@ -1,0 +1,30 @@
+{
+  "name": "@invites/render-worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc -p .",
+    "test": "vitest run --passWithNoTests",
+    "test:exports": "vitest run --config vitest.exports.config.ts"
+  },
+  "dependencies": {
+    "@invites/config": "workspace:*",
+    "@invites/renderer": "workspace:*",
+    "pg-boss": "10.1.6",
+    "playwright": "1.63.0",
+    "tsx": "4.20.6",
+    "@invites/db": "workspace:*",
+    "@invites/i18n": "workspace:*",
+    "@invites/content-schema": "workspace:*",
+    "@invites/template-mohar": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.1",
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0",
+    "@types/pngjs": "6.0.5"
+  }
+}

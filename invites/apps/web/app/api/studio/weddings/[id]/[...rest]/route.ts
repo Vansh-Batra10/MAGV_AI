@@ -9,6 +9,7 @@ import { dashboard, toCsv } from "@/lib/dashboard";
 import { normalizePhone, parseCsv, parsePaste } from "@/lib/messages";
 import { createRazorpayOrder, priceFor } from "@/lib/payments";
 import { isMockMode } from "@invites/config";
+import { renderViaWorker } from "@/lib/worker";
 
 type P = { params: Promise<{ id: string; rest: string[] }> };
 
@@ -28,7 +29,7 @@ function wrap(fn: (req: Request, p: P) => Promise<Response>) {
   };
 }
 
-export const GET = wrap(async (_req, p) => {
+export const GET = wrap(async (_req: Request, p) => {
   const { u, id, path } = await ctx(p);
   if (!u) return fail(401, "login");
   const s = store();
@@ -53,6 +54,14 @@ export const GET = wrap(async (_req, p) => {
     const d = dashboard(w, guests, rsvps);
     const rows: (string | number)[][] = [["Function", "Date", "Adults", "Kids", "Veg", "Jain", "Vegan", "Non-veg", "Not stated"], ...d.fns.map((f) => [f.title, f.startsAt.slice(0, 10), f.adults, f.kids, f.food.veg!, f.food.jain!, f.food.vegan!, f.food["non-veg"]!, f.food.unknown!])];
     return new Response(toCsv(rows), { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="caterer-${w.inviteCode}.csv"` } });
+  }
+  const exp = path.match(/^export\/(video|card|qr-card|crest|pdf)$/);
+  if (exp) {
+    const url = new URL(_req.url);
+    const r = await renderViaWorker({ kind: exp[1]!, inviteCode: w.inviteCode, ...(url.searchParams.get("size") ? { size: url.searchParams.get("size")! } : {}), ...(url.searchParams.get("group") ? { group: url.searchParams.get("group")! } : {}) });
+    const ext = { video: "mp4", card: "jpg", "qr-card": "pdf", crest: "png", pdf: "pdf" }[exp[1]!];
+    const h = new Headers(r.headers); if (r.ok) h.set("content-disposition", `attachment; filename="${exp[1]}-${w.inviteCode}.${ext}"`);
+    return new Response(r.body, { status: r.status, headers: h });
   }
   return fail(404, "not found");
 });
@@ -96,6 +105,21 @@ export const POST = wrap(async (req, p) => {
     const g = z.object({ name: z.string().trim().min(1).max(40), defaults: z.object({ locale: Locale.optional(), tone: Tone.optional(), invitedEventIds: z.array(z.string()).optional(), shagunVisible: z.boolean().optional() }).default({}) }).parse(body);
     s.updateWedding(u.id, id, { groups: [...w.groups, { id: newId(), ...g }] });
     return NextResponse.json({ ok: true });
+  }
+  if (path === "personal-asset") {
+    // Couture: personal AI assets from the couple's photos, only with explicit consent. Photos are stored privately,
+    // used only for this couple, never for training, and deleted 30 days after the last function (purgeablePersonal).
+    const b = z.object({ template: z.string(), pack: z.string(), slot: z.string(), consent: z.literal(true), photoBase64: z.string().max(8_000_000).optional() }).parse(body);
+    if (!entitlementsFor(w.tier).personalAiAssets) return fail(403, "Personal art is part of Couture");
+    if (b.photoBase64) {
+      const { mkdirSync, writeFileSync } = await import("node:fs");
+      const dir = `${process.cwd()}/.data/private/${w.id}`; mkdirSync(dir, { recursive: true });
+      writeFileSync(`${dir}/${Date.now()}.jpg`, Buffer.from(b.photoBase64, "base64"));
+    }
+    const { assets } = await import("@/lib/admin");
+    const a = await assets();
+    const rec = await a.generateSlot({ template: b.template, pack: b.pack, slot: b.slot, scope: "wedding", ownerId: w.id, consent: true });
+    return NextResponse.json({ ok: true, id: rec.id, review: rec.review });
   }
   if (path === "publish") { s.updateWedding(u.id, id, { status: "published" }); return NextResponse.json({ ok: true }); }
   if (path === "pay") {

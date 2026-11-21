@@ -26,7 +26,8 @@
     "@invites/template-rang-kahani": "workspace:*",
     "@invites/template-mohar": "workspace:*",
     "@invites/db": "workspace:*",
-    "zod": "3.25.76"
+    "zod": "3.25.76",
+    "@invites/ai-assets": "workspace:*"
   },
   "devDependencies": {
     "@fontsource/baloo-2": "5.2.7",

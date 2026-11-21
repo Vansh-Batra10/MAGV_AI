@@ -1,0 +1,26 @@
+{
+  "name": "@invites/ai-assets",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "test": "vitest run",
+    "generate": "tsx src/cli.ts"
+  },
+  "dependencies": {
+    "@invites/renderer": "workspace:*",
+    "@invites/template-sheesh-mahal": "workspace:*",
+    "@invites/template-rang-kahani": "workspace:*",
+    "@invites/template-mohar": "workspace:*",
+    "tsx": "4.20.6"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.1",
+    "pngjs": "7.0.0",
+    "@types/pngjs": "6.0.5"
+  }
+}

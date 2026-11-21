@@ -37,3 +37,21 @@ Format: date — decision. Options considered. Reason.
 - **Payments: MOCK grants the tier instantly; real mode creates a Razorpay order and only the HMAC-verified webhook (`/api/pay/razorpay`) grants the tier.** RevenueCat (app) will write to the same `orders/entitlements` model.
 - **Exports from the studio are CSV (UTF-8 BOM, formula-injection safe) that open in Excel.** True XLSX would need a new dependency; CSV meets the caterer and guest-list needs. Recorded as a deviation from "XLSX export".
 - **Editor "advanced" tab edits the full content JSON, validated by the same Zod schema server-side.** Structured forms cover names, functions, dress codes, updates, guests, shagun; the JSON editor covers the long tail (FAQ, stay, wording) until dedicated forms exist.
+
+### M7
+- **Render worker = Node + Playwright Chromium + ffmpeg with a small HTTP API** (`apps/render-worker`). MOCK mode uses an in-process idempotent queue (same kind + params → same job; up to 3 attempts); with `DATABASE_URL`, pg-boss is the queue. The web app proxies exports and OG images through `lib/worker.ts`.
+- **Video frames are captured by `seek(i/30)` + JPEG screenshots piped to ffmpeg (libx264, CRF 24, maxrate 2.3 Mb/s).** Measured: Sheesh Mahal 34 s → 5.4 MB at 1080×1920. Rendering takes ~5 min on this container (frame screenshots dominate); a CDP screencast or parallel segment rendering is the next optimisation.
+- **Video audio track is silent AAC for now.** The synthesised sounds are realtime Web Audio; offline-rendering each template's sound score through `OfflineAudioContext` is a follow-up (TODO in `render.ts`).
+- **OG images are rendered by the worker with headless Chromium** (correct Indic shaping), cached per guest + wedding version via an immutable URL (`?v=updatedAt`). Fonts are served with `Access-Control-Allow-Origin: *` so the worker's off-origin pages can load them.
+- **QR codes on printed cards are verified by decoding the rendered PNG with jsQR in tests** (`test:exports`).
+
+### M8
+- **Couple app = native screens for daily jobs (login, invites, guests + contacts import, send queue, dashboard) + the shared studio in a WebView for rich editing, preview, shagun ledger, plans and exports.** This gives full feature parity with one code path for the heavy UI and the renderer, which the spec requires to run in a WebView anyway.
+- **`apps/mobile` is excluded from the pnpm workspace** (`!apps/mobile`) and installed on its own (`npm install` in that folder). It pulls ~380 MB of React Native tooling that web/worker CI does not need.
+- **Verified here: `tsc --noEmit` passes and Metro can bundle the app for Android (`expo export`).** Native iOS/Android builds and the Maestro smoke test (`e2e/smoke.yaml`) need Xcode / Android SDK + emulators, which this container lacks; they are owner-run steps in LAUNCH_CHECKLIST.md.
+
+### M9
+- **The MOCK image provider draws deterministic procedural placeholder art with a tiny built-in PNG encoder** (no native image deps). Real providers plug into `ImageProvider` once model names, pricing and terms are verified (VERIFY #11).
+- **Post-processing uses ffmpeg for AVIF (libaom) + WebP variants** at 720/1080/1440 (or native width when narrower). Matte choke and palette harmonisation run in JS.
+- **OCR stray-text check runs only when `tesseract` is installed in the worker image; otherwise it is marked "manual" and the admin must review.** The approve action refuses assets with any failed automatic check.
+- **Puppet rigging tool v1 saves polygons + pivots as rig JSON**; cutting the part PNGs from the polygons is the next step (v2: automatic segmentation).
