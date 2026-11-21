@@ -1,0 +1,9 @@
+{
+  "name": "@invites/i18n",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "typecheck": "tsc -p .", "test": "vitest run" },
+  "dependencies": { "@invites/content-schema": "workspace:*" }
+}

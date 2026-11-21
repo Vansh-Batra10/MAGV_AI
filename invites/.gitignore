@@ -1,0 +1,12 @@
+node_modules/
+.next/
+dist/
+.turbo/
+.data/
+.env
+.env.local
+test-results/
+playwright-report/
+apps/render-worker/out/
+*.tsbuildinfo
+apps/web/public/fonts/

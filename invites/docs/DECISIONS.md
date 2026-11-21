@@ -1,0 +1,24 @@
+# Decisions log
+
+Format: date — decision. Options considered. Reason.
+
+## 2026-11-21
+
+- **Monorepo lives in `invites/`, not the repo root.** Options: root, subfolder. The repository already holds an unrelated Python project (AI receptionist); building at the root would mix toolchains, READMEs and CI. A subfolder keeps both intact. CI for this product is `.github/workflows/invites.yml` with `working-directory: invites`.
+- **Working brand name "Nimantran" (`packages/config/brand.ts`).** Placeholder only; every surface reads it from config. Trademark/domain check is in VERIFY.md.
+- **Packages ship TypeScript source (no build step).** `exports` point at `src/index.ts`; Next.js `transpilePackages`, Vitest and `tsx` consume them directly. Faster iteration, one source of truth.
+- **Audio is synthesised with Web Audio (reed phrase for the shehnai sting, plucked partials for santoor, pitched thumps for dholak, filtered noise for paper/whoosh, bell partials for the coin clink).** Options: licensed recordings, synthesis. Zero bytes to download (well under the 400 KB budget), works offline, no licensing risk, no film music. Recorded audio can replace any sound via `AudioManager.registerBuffer` once a licence file exists in `/licenses`.
+- **Loader flame is an SVG + CSS keyframe animation instead of a Lottie file.** Same look, 0 KB vs ≤25 KB, no lottie-web on the critical path. lottie-web stays allowed for slots that need it later.
+- **Procedural art in MOCK mode.** All Sheesh Mahal plates (sky, palace, gateway, doors, toran, diyas, chambers) are generated SVG driven by pack tokens (CSS custom properties). Slots stay declared in the manifest with byte budgets, so real AI/illustrated plates can replace them without touching choreography.
+- **Nameplate sits on the gateway lintel, not across the door leaves.** A plate across both leaves would tear when the doors open; on the lintel it stays readable at 360 px and the camera flies under it.
+- **Mirror mosaic = static fine-grain wall in an offscreen buffer + per-frame "live" tiles only inside the names box.** The tier budgets (A 900 / B 500 / C 220) apply to the live tiles that spell the names. One gradient fill per frame draws the light sweep across the whole wall. Gives legible "names in reflections" at 60 fps instead of coarse 17 px tiles.
+- **Determinism: ambient motion and particles are closed-form functions of time** (`Clock.renderAt(t)`, `particleAt(p, τ)`), never integrated state; GSAP timelines are built paused. A seek renders identical DOM state and canvas pixels. Screenshot comparison allows ≤ 0.05 % differing pixels because GPU compositing of transformed layers can vary by a few anti-aliased pixels.
+- **Indic text animates per word; Latin per grapheme.** `Intl.Segmenter` grapheme clusters (with a merge pass for older ICU without GB9c) keep conjuncts together, but shaping like reph and half-forms can span clusters, so per-word is the safe unit for Indic scripts.
+- **Motif art:** Om, Ik Onkar, Khanda and Bismillah are glyph outlines extracted from OFL fonts (Rozha One, Noto Sans Gurmukhi, Noto Sans Symbols, Amiri) with `packages/renderer/scripts/extract_glyph.py` and stored as SVG paths. Ganesh and the cross are hand-drawn line art. The motif draws in a gold line via `stroke-dashoffset`.
+- **Fonts are self-hosted from `@fontsource/*` (OFL), latin + latin-ext + devanagari subsets with `unicode-range`.** Per-invite glyph subsets are produced with `pyftsubset --layout-features='*'` at publish time (`packages/renderer/scripts/subset_fonts.py`). Dependency reason: fontsource is the cleanest way to vendor Google Fonts files with licences.
+- **QR codes:** `qrcode-generator@1.4.4` (MIT, ~20 KB, no deps), used for the desktop UPI QR, video end card and printable QR cards. Not in §18; added because a hand-written QR encoder is a correctness risk for payments.
+- **Shared guest sections (§9) live in the renderer (`@invites/renderer/sections`) as framework-agnostic DOM**, styled through `--sec-*` tokens each template maps from its own palette. Templates hook in their signature moments (lantern sky RSVP, potli shagun). Same code runs in Next.js, the Expo WebView and the render worker.
+- **Static maps are procedural placeholders** linking to Google/Apple Maps deep links; no map SDK on guest pages. A real static-map provider is a VERIFY item.
+- **GSAP licence:** GSAP 3.13 is free for commercial use under the standard "no charge" licence, including ScrollTrigger, Flip and MotionPath. The licence forbids use in a product that competes with Webflow's visual animation builders; an invitation product is not such a tool. Recorded here as compliance.
+- **ESLint forbids `Math.random()`** (`no-restricted-properties`) so nothing non-deterministic sneaks into renders.
+- **Tailwind deferred to the studio (M6).** M0–M5 platform UI is minimal; the guest route ships no Tailwind.

@@ -1,0 +1,24 @@
+{
+  "name": "invites-monorepo",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "eslint .",
+    "test": "turbo run test",
+    "e2e": "pnpm --filter @invites/web e2e",
+    "screens": "pnpm --filter @invites/web screens",
+    "assets:generate": "pnpm --filter @invites/ai-assets generate",
+    "fonts:subset": "python3 packages/renderer/scripts/subset_fonts.py"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.1",
+    "eslint": "9.39.1",
+    "turbo": "2.6.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.47.0",
+    "vitest": "3.2.4"
+  }
+}
