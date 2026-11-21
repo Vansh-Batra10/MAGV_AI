@@ -1,0 +1,41 @@
+{
+  "name": "@invites/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/copy-fonts.mjs",
+    "dev": "next dev -p 3000",
+    "prebuild": "node scripts/copy-fonts.mjs",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "e2e": "playwright test --trace off",
+    "screens": "node scripts/screens.mjs"
+  },
+  "dependencies": {
+    "@invites/config": "workspace:*",
+    "@invites/content-schema": "workspace:*",
+    "@invites/i18n": "workspace:*",
+    "@invites/renderer": "workspace:*",
+    "@invites/template-sheesh-mahal": "workspace:*",
+    "next": "15.5.29",
+    "react": "19.1.10",
+    "react-dom": "19.1.10"
+  },
+  "devDependencies": {
+    "@fontsource/baloo-2": "5.2.7",
+    "@fontsource/bodoni-moda": "5.2.7",
+    "@fontsource/eb-garamond": "5.2.7",
+    "@fontsource/inter": "5.2.7",
+    "@fontsource/martel": "5.2.7",
+    "@fontsource/rozha-one": "5.2.7",
+    "@fontsource/tiro-devanagari-hindi": "5.2.7",
+    "@fontsource/yatra-one": "5.2.7",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.19.1",
+    "@types/react": "19.2.6",
+    "@types/react-dom": "19.2.3"
+  }
+}

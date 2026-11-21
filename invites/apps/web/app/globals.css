@@ -1,0 +1,6 @@
+@font-face{font-family:"Inter";font-weight:400 700;font-display:swap;src:url("/fonts/inter-latin-400-normal.woff2") format("woff2")}
+:root{--ui-ink:#1C1A22;--ui-ink-soft:#4A4654;--ui-paper:#FAF8F4;--ui-line:#E6E1D8;--ui-accent:#7A2E4F}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Devanagari",sans-serif;color:var(--ui-ink);background:var(--ui-paper);-webkit-font-smoothing:antialiased}
+a{color:inherit}
