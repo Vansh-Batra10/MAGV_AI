@@ -55,3 +55,10 @@ Format: date — decision. Options considered. Reason.
 - **Post-processing uses ffmpeg for AVIF (libaom) + WebP variants** at 720/1080/1440 (or native width when narrower). Matte choke and palette harmonisation run in JS.
 - **OCR stray-text check runs only when `tesseract` is installed in the worker image; otherwise it is marked "manual" and the admin must review.** The approve action refuses assets with any failed automatic check.
 - **Puppet rigging tool v1 saves polygons + pivots as rig JSON**; cutting the part PNGs from the polygons is the next step (v2: automatic segmentation).
+
+### M10
+- **Home hero = the real interactive invite, loaded on tap** (a poster frame of the actual gate until then). Keeps the marketing page at Lighthouse mobile performance 96 / accessibility 100 (measured on a production build with simulated slow 4G).
+- **Blog posts are typed data (`lib/content/posts.ts`) rendered by a page, not MDX.** Avoids an MDX toolchain dependency for two SEO posts; switch to MDX when editors need it.
+- **Guest route Lighthouse (mobile, simulated): performance 73, FCP 0.8 s (salutation painted), CLS 0, LCP 4.6 s, TBT 360 ms.** The §20 budgets that matter are met (name ≤ 1.5 s, JS ≤ 180 KiB, CLS < 0.05). LCP is the gate art, which only appears once the template's JS runs; the next optimisation is server-rendering each template's gate SVG into the shell so the LCP element is in the HTML.
+- **CSP keeps `'unsafe-inline'` for scripts and styles** because Next.js App Router inlines its bootstrap; moving to nonces via middleware is a hardening follow-up. Everything else is `'self'`.
+- **Honeypot + rate limit on the public name form; OTP limited per IP and per phone.** No third-party CAPTCHA (privacy and weight on guest pages).

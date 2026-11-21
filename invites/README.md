@@ -20,9 +20,25 @@ pnpm dev            # web on http://localhost:3000
 - Template playground: http://localhost:3000/dev/playground
 - Demo guest links: http://localhost:3000/demo/mehtaPAR1 (elder, Hindi), /demo/riyaFRND2 (friend), /demo/kapoorOF3 (office)
 
+## What's where
+
+| Surface | URL / command |
+|---|---|
+| Marketing site (EN / HI) | `/`, `/hi`, `/templates/sheesh-mahal`, `/pricing`, `/blog` |
+| Guest invite | `/{inviteCode}/{guestCode}`; public link `/{inviteCode}` |
+| Studio (couple) | `/studio` (log in with any phone; MOCK mode shows the OTP). Demo couple: `+919800000000` |
+| Admin | `/admin` (demo admin phone `+919800000001`) |
+| Playground (dev) | `/dev/playground` |
+| Render worker | `pnpm --filter @invites/render-worker dev` (port 3100); started by `pnpm dev` |
+| Couple app | `cd apps/mobile && npm install && npx expo start` (outside the pnpm workspace) |
+| AI assets | `pnpm assets:generate --template sheesh-mahal --pack jaipur-dusk` (MOCK provider) |
+
 ## Checks
 
 ```bash
 pnpm typecheck && pnpm lint && pnpm test
 pnpm e2e            # Playwright (needs `pnpm dev` or starts its own server)
+pnpm --filter @invites/render-worker test:exports   # slow: renders videos (web must be running)
 ```
+
+Docs: [`docs/TEMPLATES.md`](docs/TEMPLATES.md), [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md), screenshots in [`docs/screens/`](docs/screens/).

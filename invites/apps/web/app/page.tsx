@@ -1,12 +1,4 @@
-import Link from "next/link";
 import { brand } from "@invites/config";
-
-export default function Home() {
-  return (
-    <main style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px" }}>
-      <h1 style={{ fontWeight: 600 }}>{brand.name}</h1>
-      <p>{brand.tagline}</p>
-      <p><Link href="/dev/playground">Template playground</Link></p>
-    </main>
-  );
-}
+import { Home } from "@/components/marketing/Home";
+export const metadata = { title: { absolute: `${brand.name}: cinematic Indian wedding invitations` }, description: "Animated wedding invitation websites for Indian families. Personal links on WhatsApp, RSVP per function, shagun by UPI.", alternates: { languages: { hi: "/hi" } } };
+export default function Page() { return <Home lang="en" />; }

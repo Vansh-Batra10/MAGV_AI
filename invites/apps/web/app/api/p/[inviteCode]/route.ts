@@ -6,7 +6,7 @@ import { allow, clientIp } from "@/lib/rate-limit";
 export async function POST(req: Request, { params }: { params: Promise<{ inviteCode: string }> }) {
   const { inviteCode } = await params;
   if (!allow(`${clientIp(req)}:public:${inviteCode}`, 5)) return NextResponse.json({ ok: false }, { status: 429 });
-  const body = z.object({ name: z.string().trim().min(1).max(60) }).safeParse(await req.json().catch(() => ({})));
+  const body = z.object({ name: z.string().trim().min(1).max(60), website: z.string().max(0).optional() }).safeParse(await req.json().catch(() => ({})));
   if (!body.success) return NextResponse.json({ ok: false }, { status: 400 });
   const s = store();
   const w = s.weddingByCode(inviteCode);

@@ -16,3 +16,5 @@ Every item here affects money, law, dates or third-party terms. Code that depend
 | 10 | DPDP Act obligations for guest phone numbers uploaded by couples (our role: processor vs fiduciary) | §24 |
 | 11 | Image-generation provider model names, pricing and terms | `packages/ai-assets` (M9) |
 | 12 | Festival / muhurat dates if ever shown (none are hard-coded today) | — |
+| 13 | Legal pages (privacy notice under DPDP, terms, refunds) and a named grievance officer with postal address | `apps/web/app/legal/[doc]/page.tsx` |
+| 14 | Razorpay webhook event names/payload fields used to grant tiers (`payment.captured`, `order_id`) | `apps/web/app/api/pay/razorpay/route.ts` |
