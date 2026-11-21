@@ -13,4 +13,4 @@ export * from "./particles";
 export * from "./scripted";
 export * from "./motifs";
 export * from "./icons";
-export * from "./qr";
+export { loadQr } from "./qr-lazy";

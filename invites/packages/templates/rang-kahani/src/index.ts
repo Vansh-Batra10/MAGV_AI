@@ -1,8 +1,8 @@
-import { coupleOrder, invitedEvents, type WeddingEvent } from "@invites/content-schema";
+import { coupleOrder, invitedEvents, type WeddingEvent } from "@invites/content-schema/client";
 import { fillWording, formatDate, formatDayMonth, formatTime, wordingFor } from "@invites/i18n";
 import {
-  arpeggio, clink, drum, ensureStyles, fitTextInBox, gsap, h, haptic, ICONS, noiseBurst, pinChapters, pluck, qrSvg, reedPhrase,
-  registerGsap, rhythmBed, ScrollTrigger, SWARAS, type Chapter, type RenderContext, type SceneId, type TemplateInstance, type TemplateModule,
+  arpeggio, clink, drum, ensureStyles, fitTextInBox, gsap, h, haptic, ICONS, noiseBurst, pinChapters, pluck,  reedPhrase,
+  registerGsap, rhythmBed, refreshScroll, type ScrollHandle, SWARAS, type Chapter, type RenderContext, type SceneId, type TemplateInstance, type TemplateModule,
 } from "@invites/renderer";
 import { eventActions, eventTitle, renderSections, topBanner } from "@invites/renderer/sections";
 import { clothSvg, coverBorderSvg, DEFS, gullakSvg, PROPS, rainSvg, scooterSvg, skylineSvg } from "./art";
@@ -55,7 +55,7 @@ function create(ctx: RenderContext): TemplateInstance {
   const mainEvent: WeddingEvent = events.find((e) => e.kind === "wedding") ?? events[0] ?? content.events[0]!;
   const packId = ctx.pack.id;
   const disposers: (() => void)[] = [];
-  const triggers: ScrollTrigger[] = [];
+  const triggers: ScrollHandle[] = [];
   const puppets: PuppetHandle[] = [];
   const brideLook: PuppetLook = DEFAULT_LOOKS[0]!;
   const groomLook: PuppetLook = DEFAULT_LOOKS[1]!;
@@ -484,7 +484,7 @@ function create(ctx: RenderContext): TemplateInstance {
     });
     const end = h("div", { class: "rk-endcard" });
     const url = ctx.services?.shareUrl ?? "";
-    end.innerHTML = `<div class="rk-truck" style="font-size:30px" data-text="${esc(t("storyEnd"))}">${esc(t("storyEnd"))}</div><div style="font-size:18px;font-weight:700">${esc(n1)} &amp; ${esc(n2)}</div><div>${esc(formatDate(mainEvent.startsAt, ctx.locale, { tz: mainEvent.tz }))}</div>${url ? `<div style="width:150px;height:150px;background:#fff;padding:6px;border-radius:6px">${qrSvg(url)}</div><div style="font-size:14px;word-break:break-all">${esc(url.replace(/^https?:\/\//, ""))}</div>` : ""}`;
+    end.innerHTML = `<div class="rk-truck" style="font-size:30px" data-text="${esc(t("storyEnd"))}">${esc(t("storyEnd"))}</div><div style="font-size:18px;font-weight:700">${esc(n1)} &amp; ${esc(n2)}</div><div>${esc(formatDate(mainEvent.startsAt, ctx.locale, { tz: mainEvent.tz }))}</div>${url ? `<div style="width:150px;height:150px;background:#fff;padding:6px;border-radius:6px">${ctx.qr?.(url) ?? ""}</div><div style="font-size:14px;word-break:break-all">${esc(url.replace(/^https?:\/\//, ""))}</div>` : ""}`;
     stage.append(end);
     master.to(end, { opacity: 1, duration: 0.5 }, at);
     at += 3.5;
@@ -505,7 +505,7 @@ function create(ctx: RenderContext): TemplateInstance {
     const done = () => {
       document.documentElement.style.overflow = ""; document.body.style.overflow = "";
       ctx.emit("sceneView", "hero");
-      ScrollTrigger.refresh();
+      refreshScroll();
       const banner = topBanner(ctx);
       if (banner) col.append(banner);
     };

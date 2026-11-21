@@ -1,9 +1,9 @@
-import { buildIcs, buildUpiUri, directionsUrls, googleCalendarUrl, invitedEvents, type RsvpSubmission, type WeddingEvent } from "@invites/content-schema";
+import { buildIcs, buildUpiUri, directionsUrls, googleCalendarUrl, invitedEvents, type RsvpSubmission, type WeddingEvent } from "@invites/content-schema/client";
 import { formatDate, formatDayMonth, formatTime, sameLocalDay, zonedParts } from "@invites/i18n";
 import { brand } from "@invites/config";
 import { ensureStyles, esc, h } from "../dom";
 import { ICONS } from "../icons";
-import { qrSvg } from "../qr";
+import { loadQr } from "../qr-lazy";
 import type { RenderContext } from "../types";
 import { SECTIONS_CSS } from "./styles";
 
@@ -209,7 +209,9 @@ export function openUpiSheet(ctx: RenderContext, block: { id: string; title: str
   if (isMobileUA()) {
     sheet.append(h("a", { class: "inv-btn inv-btn-primary", style: "width:100%", href: uri, "data-upi": uri, text: t("payWithUpi") }));
   } else {
-    sheet.append(h("div", { class: "inv-qr", "data-upi": uri, html: qrSvg(uri, { label: t("scanUpi") }) }), h("p", { style: "text-align:center;margin:0", text: t("scanUpi") }));
+    const box = h("div", { class: "inv-qr", "data-upi": uri });
+    void loadQr().then((qrSvg) => { box.innerHTML = qrSvg(uri, { label: t("scanUpi") }); });
+    sheet.append(box, h("p", { style: "text-align:center;margin:0", text: t("scanUpi") }));
   }
   const pledged = h("button", { class: "inv-btn", type: "button", style: "width:100%;margin-top:10px", text: t("iSentIt") });
   const msg = h("p", { class: "inv-msg", style: "display:none", role: "status" });

@@ -35,6 +35,9 @@ importers:
       '@invites/content-schema':
         specifier: workspace:*
         version: link:../../packages/content-schema
+      '@invites/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@invites/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
@@ -59,6 +62,9 @@ importers:
       react-dom:
         specifier: 19.1.10
         version: 19.1.10(react@19.1.10)
+      zod:
+        specifier: 3.25.76
+        version: 3.25.76
     devDependencies:
       '@fontsource/baloo-2':
         specifier: 5.2.7
@@ -104,6 +110,19 @@ importers:
       zod:
         specifier: 3.25.76
         version: 3.25.76
+
+  packages/db:
+    dependencies:
+      '@invites/config':
+        specifier: workspace:*
+        version: link:../config
+      '@invites/content-schema':
+        specifier: workspace:*
+        version: link:../content-schema
+    devDependencies:
+      '@types/node':
+        specifier: 22.19.1
+        version: 22.19.1
 
   packages/i18n:
     dependencies:

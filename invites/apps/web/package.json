@@ -24,7 +24,9 @@
     "react": "19.1.10",
     "react-dom": "19.1.10",
     "@invites/template-rang-kahani": "workspace:*",
-    "@invites/template-mohar": "workspace:*"
+    "@invites/template-mohar": "workspace:*",
+    "@invites/db": "workspace:*",
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@fontsource/baloo-2": "5.2.7",

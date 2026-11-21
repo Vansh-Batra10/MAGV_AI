@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  transpilePackages: ["@invites/renderer", "@invites/config", "@invites/content-schema", "@invites/i18n", "@invites/template-sheesh-mahal", "@invites/template-rang-kahani", "@invites/template-mohar"],
+  transpilePackages: ["@invites/db", "@invites/renderer", "@invites/config", "@invites/content-schema", "@invites/i18n", "@invites/template-sheesh-mahal", "@invites/template-rang-kahani", "@invites/template-mohar"],
   poweredByHeader: false,
   devIndicators: false,
   async headers() {

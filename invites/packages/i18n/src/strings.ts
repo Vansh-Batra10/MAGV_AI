@@ -1,4 +1,4 @@
-import type { Locale, Tone } from "@invites/content-schema";
+import type { Locale, Tone } from "@invites/content-schema/client";
 
 /**
  * Guest-facing copy. Keys may have tone variants: { formal, warm, playful } — missing tones fall back to `warm`.

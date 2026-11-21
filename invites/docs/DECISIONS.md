@@ -22,3 +22,11 @@ Format: date — decision. Options considered. Reason.
 - **GSAP licence:** GSAP 3.13 is free for commercial use under the standard "no charge" licence, including ScrollTrigger, Flip and MotionPath. The licence forbids use in a product that competes with Webflow's visual animation builders; an invitation product is not such a tool. Recorded here as compliance.
 - **ESLint forbids `Math.random()`** (`no-restricted-properties`) so nothing non-deterministic sneaks into renders.
 - **Tailwind deferred to the studio (M6).** M0–M5 platform UI is minimal; the guest route ships no Tailwind.
+
+### M5
+- **ScrollTrigger replaced by CSS `position: sticky` + a 60-line rAF scrubber (`renderer/src/scripted.ts`).** Measured guest-route initial JS (gzip, production build, framework included): before 179 KB + template; after 155 KB route + template = Rang Kahani 174 KB, Mohar 171 KB, Sheesh Mahal 180 KB (all ≤ 180 KiB). Sticky pinning also avoids ScrollTrigger's pin-spacer reflows on low-end phones. Trade-off: no snap-to-chapter-end; the 0.6 s scrub smoothing is kept. §18 lists ScrollTrigger; it is no longer shipped.
+- **Zod never reaches guest browsers.** `@invites/content-schema/client` exports types and pure helpers only; the renderer, templates and i18n import from it. The QR encoder is lazy-loaded (`loadQr`) and preloaded only in scripted modes.
+- **The server sends a guest only their own functions** (other functions are filtered out, not just hidden), strips shagun data unless that guest may see it, and never sends the couple's phone or email.
+- **Open tracking is posted by the client after the loader** (not counted on server render), so link-preview bots and prefetchers don't mark invites as opened.
+- **Mock store = JSON file with RLS-equivalent checks** (`packages/db/src/store.ts`); SQL migrations with RLS policies live in `packages/db/migrations` for Supabase. Store tests prove isolation between weddings.
+- **Public link mode** creates a named guest record from "Aapka naam?" (rate-limited to 5 per minute per IP) and redirects to that personal link, so RSVPs are attributed.

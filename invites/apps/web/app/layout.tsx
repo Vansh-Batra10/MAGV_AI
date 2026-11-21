@@ -3,6 +3,7 @@ import { brand } from "@invites/config";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL ?? "http://localhost:3000"),
   title: { default: `${brand.name} · Cinematic wedding invitations`, template: `%s · ${brand.name}` },
   description: "Cinematic, animated Indian wedding invitations. The card is the website.",
 };

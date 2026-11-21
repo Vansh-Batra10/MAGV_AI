@@ -1,4 +1,4 @@
-import type { CeremonyStyle, EventKind } from "@invites/content-schema";
+import type { CeremonyStyle, EventKind } from "@invites/content-schema/client";
 import type { PRNG } from "@invites/renderer";
 import { chhatri, cuspedArch, onionDome, pointedArch } from "./geometry";
 

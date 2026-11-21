@@ -1,4 +1,4 @@
-import type { Locale } from "@invites/content-schema";
+import type { Locale } from "@invites/content-schema/client";
 
 const DAYS_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const DAYS_HINGLISH = ["Raviwaar", "Somwaar", "Mangalwaar", "Budhwaar", "Guruwaar", "Shukrawaar", "Shanivaar"];

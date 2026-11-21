@@ -1,4 +1,4 @@
-import type { CeremonyStyle, Locale, Tone } from "@invites/content-schema";
+import type { CeremonyStyle, Locale, Tone } from "@invites/content-schema/client";
 
 /**
  * Wording presets per ceremony style × tone × language (§22). Editable by the couple.

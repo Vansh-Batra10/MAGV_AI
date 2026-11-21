@@ -1,8 +1,8 @@
-import { coupleOrder, invitedEvents, type WeddingEvent } from "@invites/content-schema";
+import { coupleOrder, invitedEvents, type WeddingEvent } from "@invites/content-schema/client";
 import { fillWording, formatDate, formatDayMonth, formatTime, wordingFor } from "@invites/i18n";
 import {
   arpeggio, clink, droneBed, ensureStyles, fitTextInBox, gsap, h, haptic, ICONS, makeBurst, makeCanvas, motifSvg, noiseBurst, particleAt,
-  pinChapters, pluck, qrSvg, reedPhrase, registerGsap, requestTilt, rhythmBed, ScrollTrigger, smooth, spriteCanvas, SWARAS,
+  pinChapters, pluck,  reedPhrase, registerGsap, requestTilt, rhythmBed, refreshScroll, type ScrollHandle, smooth, spriteCanvas, SWARAS,
   type Chapter, type RenderContext, type SceneId, type TemplateInstance, type TemplateModule,
 } from "@invites/renderer";
 import { eventActions, eventTitle, renderSections, topBanner } from "@invites/renderer/sections";
@@ -47,7 +47,7 @@ function create(ctx: RenderContext): TemplateInstance {
   const n2 = hiNames && p2.nameHi ? p2.nameHi : p2.name;
   const mainEvent: WeddingEvent = events.find((e) => e.kind === "wedding") ?? events[0] ?? content.events[0]!;
   const disposers: (() => void)[] = [];
-  const triggers: ScrollTrigger[] = [];
+  const triggers: ScrollHandle[] = [];
 
   // ---------- audio (synthesised; see DECISIONS) ----------
   audio.register("shehnai", reedPhrase([[SWARAS.Sa2, 0.35], [SWARAS.Re2, 0.25], [SWARAS.Ga2, 0.5], [SWARAS.Re2, 0.3], [SWARAS.Sa2, 0.9]], 0.16));
@@ -450,7 +450,7 @@ function create(ctx: RenderContext): TemplateInstance {
     const url = ctx.services?.shareUrl ?? "";
     endcard.innerHTML = `<div style="font-family:'Rozha One',serif;font-size:34px;line-height:1.1;color:var(--gold-2)">${escapeHtml(n1)}<br><span style="font-size:20px;color:var(--ivory)">${escapeHtml(t("and"))}</span><br>${escapeHtml(n2)}</div>
 <div style="font-size:16px;color:var(--ivory)">${escapeHtml(formatDate(mainEvent.startsAt, ctx.locale, { tz: mainEvent.tz }))}</div>
-${url ? `<div style="width:150px;height:150px;background:#fff;padding:6px">${qrSvg(url)}</div><div style="font-size:14px;color:var(--ivory);word-break:break-all">${escapeHtml(url.replace(/^https?:\/\//, ""))}</div>` : ""}`;
+${url ? `<div style="width:150px;height:150px;background:#fff;padding:6px">${ctx.qr?.(url) ?? ""}</div><div style="font-size:14px;color:var(--ivory);word-break:break-all">${escapeHtml(url.replace(/^https?:\/\//, ""))}</div>` : ""}`;
     master.to(endcard, { opacity: 1, duration: 0.5 }, at);
     at += 3;
     duration = at;
@@ -479,7 +479,7 @@ ${url ? `<div style="width:150px;height:150px;background:#fff;padding:6px">${qrS
       document.body.style.overflow = "";
       ctx.emit("sceneView", "hero");
       if (!audio.muted) { startBed(); audio.sting("santoor"); }
-      ScrollTrigger.refresh();
+      refreshScroll();
       const banner = topBanner(ctx);
       if (banner) col.append(banner);
     };

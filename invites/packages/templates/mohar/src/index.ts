@@ -1,8 +1,8 @@
-import { coupleOrder, invitedEvents, type WeddingEvent } from "@invites/content-schema";
+import { coupleOrder, invitedEvents, type WeddingEvent } from "@invites/content-schema/client";
 import { fillWording, formatDate, formatDayMonth, formatTime, wordingFor } from "@invites/i18n";
 import {
-  droneBed, ensureStyles, fitTextInBox, hasIndic, splitIntoSpans, gsap, h, haptic, ICONS, motifSvg, noiseBurst, pinChapters, pluck, qrSvg, registerGsap,
-  ScrollTrigger, SWARAS, arpeggio, type RenderContext, type SceneId, type TemplateInstance, type TemplateModule,
+  droneBed, ensureStyles, fitTextInBox, hasIndic, splitIntoSpans, gsap, h, haptic, ICONS, motifSvg, noiseBurst, pinChapters, pluck,  registerGsap,
+  refreshScroll, scrollProgress, type ScrollHandle, SWARAS, arpeggio, type RenderContext, type SceneId, type TemplateInstance, type TemplateModule,
 } from "@invites/renderer";
 import { eventActions, eventTitle, renderSections, topBanner } from "@invites/renderer/sections";
 import { boxBaseSvg, lidSvg, ribbonSvg, sealShards, stainedGlassSvg, tissueSvg, velvetSvg, venuePainting } from "./art";
@@ -54,7 +54,7 @@ function create(ctx: RenderContext): TemplateInstance {
   const mainEvent: WeddingEvent = events.find((e) => e.kind === "wedding") ?? events[0] ?? content.events[0]!;
   const crest = crestFor(ctx);
   const disposers: (() => void)[] = [];
-  const triggers: ScrollTrigger[] = [];
+  const triggers: ScrollHandle[] = [];
 
   audio.register("crack", (ac, out, at) => { noiseBurst(0.09, 0.35, 1200)(ac, out, at); noiseBurst(0.05, 0.25, 3000)(ac, out, at + 0.05); return 0.3; });
   audio.register("paper", noiseBurst(0.5, 0.05, 2400, "bandpass"));
@@ -294,7 +294,7 @@ function create(ctx: RenderContext): TemplateInstance {
       onShagunBlock: async (el) => { audio.sting("paper"); if (!calm) await gsap.fromTo(el, { rotateY: 0 }, { rotateY: 180, duration: 0.25, yoyo: true, repeat: 1, ease: "power1.inOut" }); },
     });
     setSectionTokens(root);
-    triggers.push(...pools.map((p, i) => ScrollTrigger.create({ trigger: fnsSec, start: "top bottom", end: "bottom top", scrub: 0.8, animation: gsap.fromTo(p, { y: -60, x: 0 }, { y: 260, x: (i % 2 ? -1 : 1) * 60, ease: "none" }) })));
+    if (!calm) triggers.push(...pools.map((p, i) => { const tw = gsap.fromTo(p, { y: -60, x: 0 }, { y: 260, x: (i % 2 ? -1 : 1) * 60, ease: "none", paused: true }); return scrollProgress(fnsSec, (q) => tw.progress(q), () => [1, 1.6]); }));
   }
 
   function ashirwad(): HTMLElement {
@@ -356,7 +356,7 @@ function create(ctx: RenderContext): TemplateInstance {
     at += 3;
     const end = h("div", { class: "mh-endcard" });
     const url = ctx.services?.shareUrl ?? "";
-    end.innerHTML = `<div class="mh-crest-s">${crestSvg({ ...crest, id: "mh-end" })}</div><div style="font-family:'Bodoni Moda',serif;font-style:italic;font-size:28px">${esc(n1)} &amp; ${esc(n2)}</div><div>${esc(formatDate(mainEvent.startsAt, ctx.locale, { tz: mainEvent.tz }))}</div>${url ? `<div style="width:140px;height:140px;background:#fff;padding:6px">${qrSvg(url)}</div><div style="font-size:14px;word-break:break-all">${esc(url.replace(/^https?:\/\//, ""))}</div>` : ""}`;
+    end.innerHTML = `<div class="mh-crest-s">${crestSvg({ ...crest, id: "mh-end" })}</div><div style="font-family:'Bodoni Moda',serif;font-style:italic;font-size:28px">${esc(n1)} &amp; ${esc(n2)}</div><div>${esc(formatDate(mainEvent.startsAt, ctx.locale, { tz: mainEvent.tz }))}</div>${url ? `<div style="width:140px;height:140px;background:#fff;padding:6px">${ctx.qr?.(url) ?? ""}</div><div style="font-size:14px;word-break:break-all">${esc(url.replace(/^https?:\/\//, ""))}</div>` : ""}`;
     stage.append(end);
     master.to(end, { opacity: 1, duration: 0.6 }, at);
     at += 3.5;
@@ -394,7 +394,7 @@ function create(ctx: RenderContext): TemplateInstance {
       document.documentElement.style.overflow = ""; document.body.style.overflow = "";
       ctx.emit("sceneView", "hero");
       if (!audio.muted && audio.unlocked) audio.bed(droneBed(SWARAS.Pa / 2));
-      ScrollTrigger.refresh();
+      refreshScroll();
       const banner = topBanner(ctx);
       if (banner) col.append(banner);
     };

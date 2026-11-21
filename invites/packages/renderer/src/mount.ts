@@ -6,6 +6,7 @@ import { ensureStyles, setVars } from "./dom";
 import { Emitter } from "./emitter";
 import { fontsReady, injectFonts } from "./fonts";
 import { createPRNG } from "./prng";
+import { loadQr } from "./qr-lazy";
 import { decideTier, FpsMonitor, probeFrames, readSignals, tierConfig } from "./tier";
 import type { Invite, InviteEvent, MountOptions, RenderContext, SceneId, Storyboard, TemplateInstance, Tier } from "./types";
 
@@ -60,6 +61,7 @@ export function mount(el: HTMLElement, opts: MountOptions): Invite {
       rng: createPRNG(o.content.inviteId), clock, audio,
       emit: (e, p) => emitter.emit(e, p), services: o.services, assetsBase, brandName: o.brandName ?? brand.name,
       particleScale: lite ? 0 : tierConfig[tier].particleScale, dpr: Math.min(dprRaw, scripted ? dprRaw : tierConfig[tier].dprCap),
+      qr: scripted ? await loadQr() : null,
       controls: {
         setLite: (on) => invite.update({ lite: on, mode: on ? "lite" : "interactive", reopen: true }),
         setLargeText: (on) => invite.update({ largeText: on, reopen: true }),

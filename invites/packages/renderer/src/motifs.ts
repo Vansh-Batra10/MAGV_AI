@@ -4,7 +4,7 @@
  * Khanda (Noto Sans Symbols), Bismillah (Amiri). Ganesh and the cross are drawn by hand as line art.
  * Motifs are only placed at the top/centre of a composition (never behind body text or in footers).
  */
-import type { Motif } from "@invites/content-schema";
+import type { Motif } from "@invites/content-schema/client";
 
 export interface MotifArt { d: string; kind: "fill" | "line"; viewBox: string; label: string }
 

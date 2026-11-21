@@ -1,4 +1,4 @@
-import type { EventKind, GuestVars, Locale, RsvpSubmission, Tone, WeddingContent } from "@invites/content-schema";
+import type { EventKind, GuestVars, Locale, RsvpSubmission, Tone, WeddingContent } from "@invites/content-schema/client";
 import type { AudioManager } from "./audio";
 import type { Clock } from "./clock";
 import type { PRNG } from "./prng";
@@ -97,6 +97,8 @@ export interface RenderContext {
   /** Particles scale for this tier (0 on C). */
   particleScale: number;
   dpr: number;
+  /** QR encoder, preloaded in scripted modes (end cards); null in interactive mode until loaded. */
+  qr: ((text: string) => string) | null;
   /** Guest-page controls wired to the host (footer toggles). */
   controls: InviteControls;
 }
