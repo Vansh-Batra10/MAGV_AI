@@ -1,3 +1,4 @@
+/* global __ENV */
 // k6 load test: 1,000 guests opening their links within 10 minutes (send burst), plus their open + RSVP calls.
 // Run: k6 run -e BASE=http://localhost:3000 -e INVITE=demo -e GUEST=riyaFRND2 load/send-burst.js
 import http from "k6/http";
