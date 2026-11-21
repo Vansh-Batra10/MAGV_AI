@@ -28,7 +28,7 @@ export async function verifyOtp(phone: string, code: string): Promise<boolean> {
   // phone is verified: shagun can be enabled on this user's weddings
   for (const w of s.weddings) if (w.ownerUserId === user.id) w.shagunVerifiedAt ??= new Date().toISOString();
   st.flush();
-  (await cookies()).set(COOKIE, token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 30 * 86400 });
+  (await cookies()).set(COOKIE, token, { httpOnly: true, sameSite: "lax", secure: (process.env.APP_URL ?? "").startsWith("https://"), path: "/", maxAge: 30 * 86400 });
   return true;
 }
 
