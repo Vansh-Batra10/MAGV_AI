@@ -1,8 +1,23 @@
 import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 
-/** The app talks to the same route handlers as the web studio (session cookie is kept by the native cookie store). */
-export const API = (Constants.expoConfig?.extra?.apiUrl as string) ?? "http://localhost:3000";
+/**
+ * The app talks to the same route handlers as the web studio (the session cookie lives in the native cookie
+ * store, shared with the WebView). The server address can be changed on the login screen, so one APK works
+ * against a local dev server on the LAN or a deployed instance.
+ */
+const DEFAULT_API = (Constants.expoConfig?.extra?.apiUrl as string) ?? "http://localhost:3000";
+const API_KEY = "inv.api";
+export let API = DEFAULT_API;
+
+export async function loadApi(): Promise<string> {
+  try { API = (await SecureStore.getItemAsync(API_KEY)) || DEFAULT_API; } catch { API = DEFAULT_API; }
+  return API;
+}
+export async function setApi(url: string): Promise<void> {
+  API = url.trim().replace(/\/+$/, "");
+  await SecureStore.setItemAsync(API_KEY, API);
+}
 
 export async function api<T = any>(path: string, init: { method?: string; body?: unknown } = {}): Promise<T> {
   const r = await fetch(`${API}${path}`, {
